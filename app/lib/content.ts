@@ -14,6 +14,8 @@ export type SiteConfig = {
   status: string;
   avatar: string;
   github: string;
+  bilibili: string;
+  qq: string;
   email: string;
   siteUrl: string;
   keywords: readonly string[];

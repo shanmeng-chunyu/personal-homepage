@@ -1,5 +1,13 @@
 import type { Metadata } from "next";
-import { GitBranch, Mail, MapPin, ShieldCheck, Sparkles } from "lucide-react";
+import {
+  GitBranch,
+  Mail,
+  MapPin,
+  MessageCircle,
+  ShieldCheck,
+  Sparkles,
+  Tv,
+} from "lucide-react";
 import { PageHeading } from "../components/page-heading";
 import { SiteShell } from "../components/site-shell";
 import { site } from "../lib/content";
@@ -59,6 +67,29 @@ export default function AboutPage() {
                 <strong>访问 GitHub</strong>
               </div>
             </a>
+          ) : null}
+          {site.bilibili ? (
+            <a
+              className="about-fact"
+              href={site.bilibili}
+              target="_blank"
+              rel="noreferrer"
+            >
+              <Tv size={18} aria-hidden="true" />
+              <div>
+                <span>视频主页</span>
+                <strong>访问 B站主页</strong>
+              </div>
+            </a>
+          ) : null}
+          {site.qq ? (
+            <div className="about-fact">
+              <MessageCircle size={18} aria-hidden="true" />
+              <div>
+                <span>QQ</span>
+                <strong>{site.qq}</strong>
+              </div>
+            </div>
           ) : null}
           {site.email ? (
             <a className="about-fact" href={`mailto:${site.email}`}>

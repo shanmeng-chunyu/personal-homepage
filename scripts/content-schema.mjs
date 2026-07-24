@@ -6,6 +6,10 @@ const slug = z
   .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "slug 只能包含小写字母、数字和连字符");
 const date = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "日期格式必须为 YYYY-MM-DD");
 const optionalUrl = z.union([z.literal(""), z.string().url()]);
+const optionalQq = z.union([
+  z.literal(""),
+  z.string().regex(/^\d{5,12}$/, "QQ 号应为 5 至 12 位数字"),
+]);
 
 export const siteSchema = z
   .object({
@@ -16,6 +20,8 @@ export const siteSchema = z
     status: z.string(),
     avatar: z.string(),
     github: optionalUrl,
+    bilibili: optionalUrl,
+    qq: optionalQq,
     email: z.union([z.literal(""), z.string().email()]),
     siteUrl: optionalUrl,
     keywords: z.array(z.string().min(1)).min(1),

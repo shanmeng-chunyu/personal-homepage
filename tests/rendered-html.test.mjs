@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
 import test from "node:test";
 
 async function render(pathname = "/") {
@@ -23,12 +24,15 @@ async function render(pathname = "/") {
 }
 
 test("首页服务端渲染个人空间", async () => {
+  const site = JSON.parse(
+    await readFile(new URL("../content/site.json", import.meta.url), "utf8"),
+  );
   const response = await render("/");
   assert.equal(response.status, 200);
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
 
   const html = await response.text();
-  assert.match(html, /@shanmeng-chunyu/);
+  assert.ok(html.includes(site.networkId));
   assert.match(html, /在南大生活，也做点有用的小东西/);
   assert.match(html, /置顶项目/);
   assert.match(html, /校园手记/);

@@ -27,6 +27,20 @@ test("个人设置不包含真实姓名字段", async () => {
   assert.match(site.networkId, /^@/);
 });
 
+test("B站主页和 QQ 可选且填写时会校验格式", async () => {
+  const site = siteSchema.parse(await readJson(new URL("site.json", contentRoot)));
+  assert.equal(site.bilibili, "");
+  assert.equal(site.qq, "");
+
+  const configured = siteSchema.parse({
+    ...site,
+    bilibili: "https://space.bilibili.com/123456",
+    qq: "123456789",
+  });
+  assert.equal(configured.bilibili, "https://space.bilibili.com/123456");
+  assert.equal(configured.qq, "123456789");
+});
+
 test("所有增量内容都满足契约且 slug 唯一", async () => {
   const groups = [
     [await readCollection("projects"), projectSchema],

@@ -37,6 +37,15 @@ content:
       - name: github
         label: GitHub 地址
         type: string
+        description: 填写完整链接；留空时网站不会显示。
+      - name: bilibili
+        label: B站主页地址
+        type: string
+        description: 填写以 https:// 开头的完整个人主页链接；留空时网站不会显示。
+      - name: qq
+        label: 公开 QQ 号
+        type: string
+        description: 仅填写 5 至 12 位数字；该号码会公开显示在网站上，留空时隐藏。
       - name: email
         label: 公开邮箱
         type: string
