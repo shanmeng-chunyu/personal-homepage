@@ -1,6 +1,6 @@
 {
   "slug": "write-os-lab-report",
-  "title": "邰颖OS实验报告攥写Skill",
+  "title": "撰写邰颖OS实验报告Skill",
   "summary": "写好os代码之后，把文档和代码给agent，使用这个SKill即可根据reference.md这个模板生成本章节的实验报告，实测有效高分！虽然现在智科的OS成选修了QWQ",
   "category": "专业课",
   "url": "https://github.com/shanmeng-chunyu/write-os-lab-report",
