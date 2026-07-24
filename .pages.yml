@@ -1,0 +1,299 @@
+media:
+  input: public/media
+  output: /media
+  rename: safe
+  extensions: [png, jpg, jpeg, webp, gif]
+
+content:
+  - name: identity
+    label: 个人空间设置
+    type: file
+    path: content/site.json
+    format: json
+    operations:
+      delete: false
+    fields:
+      - name: networkId
+        label: 网络 ID
+        type: string
+        required: true
+      - name: avatar
+        label: 头像
+        type: image
+      - name: tagline
+        label: 一句话介绍
+        type: string
+        required: true
+      - name: intro
+        label: 主页简介
+        type: text
+        required: true
+      - name: location
+        label: 公开位置
+        type: string
+      - name: status
+        label: NOW 近况
+        type: text
+      - name: github
+        label: GitHub 地址
+        type: string
+      - name: email
+        label: 公开邮箱
+        type: string
+      - name: siteUrl
+        label: 网站地址
+        type: string
+      - name: keywords
+        label: 网站关键词
+        type: string
+        list: true
+
+  - name: content-space
+    label: 内容
+    type: group
+    items:
+      - name: projects
+        label: 项目
+        type: collection
+        path: content/projects
+        format: json
+        filename: "{primary}.json"
+        view:
+          primary: title
+          fields: [title, status, year, published]
+          sort: year
+          order: desc
+        fields:
+          - name: slug
+            label: 网址标识
+            type: string
+            required: true
+            description: 仅使用小写英文字母、数字和连字符，创建后不要随意修改。
+          - name: title
+            label: 项目名称
+            type: string
+            required: true
+          - name: summary
+            label: 简介
+            type: text
+            required: true
+          - name: body
+            label: 项目详情
+            type: rich-text
+            required: true
+            options:
+              format: markdown
+              media: true
+          - name: year
+            label: 年份
+            type: number
+            required: true
+          - name: status
+            label: 状态
+            type: select
+            required: true
+            options:
+              values: [计划中, 进行中, 已完成, 暂停]
+          - name: tech
+            label: 技术或关键词
+            type: string
+            list: true
+          - name: github
+            label: GitHub 地址
+            type: string
+          - name: demo
+            label: 在线演示地址
+            type: string
+          - name: cover
+            label: 封面
+            type: image
+          - name: featured
+            label: 首页置顶
+            type: boolean
+            default: false
+          - name: published
+            label: 公开发布
+            type: boolean
+            default: false
+
+      - name: campus
+        label: 校园手记
+        type: collection
+        path: content/campus
+        format: json
+        filename: "{primary}.json"
+        view:
+          primary: title
+          fields: [title, category, date, published]
+          sort: date
+          order: desc
+        fields:
+          - name: slug
+            label: 网址标识
+            type: string
+            required: true
+          - name: title
+            label: 标题
+            type: string
+            required: true
+          - name: summary
+            label: 摘要
+            type: text
+            required: true
+          - name: body
+            label: 正文
+            type: rich-text
+            required: true
+            options:
+              format: markdown
+              media: true
+          - name: date
+            label: 发布日期
+            type: date
+            required: true
+          - name: updated
+            label: 最后更新
+            type: date
+            required: true
+          - name: category
+            label: 分类
+            type: string
+            required: true
+          - name: tags
+            label: 标签
+            type: string
+            list: true
+          - name: cover
+            label: 封面
+            type: image
+          - name: featured
+            label: 首页置顶
+            type: boolean
+            default: false
+          - name: published
+            label: 公开发布
+            type: boolean
+            default: false
+
+      - name: notes
+        label: 随笔
+        type: collection
+        path: content/notes
+        format: json
+        filename: "{primary}.json"
+        view:
+          primary: title
+          fields: [title, category, date, published]
+          sort: date
+          order: desc
+        fields:
+          - name: slug
+            label: 网址标识
+            type: string
+            required: true
+          - name: title
+            label: 标题
+            type: string
+            required: true
+          - name: summary
+            label: 摘要
+            type: text
+            required: true
+          - name: body
+            label: 正文
+            type: rich-text
+            required: true
+            options:
+              format: markdown
+              media: true
+          - name: date
+            label: 发布日期
+            type: date
+            required: true
+          - name: updated
+            label: 最后更新
+            type: date
+            required: true
+          - name: category
+            label: 分类
+            type: string
+            required: true
+          - name: tags
+            label: 标签
+            type: string
+            list: true
+          - name: featured
+            label: 首页置顶
+            type: boolean
+            default: false
+          - name: published
+            label: 公开发布
+            type: boolean
+            default: false
+
+      - name: resources
+        label: 资料库
+        type: collection
+        path: content/resources
+        format: json
+        filename: "{primary}.json"
+        view:
+          primary: title
+          fields: [title, category, lastChecked, published]
+          sort: lastChecked
+          order: desc
+        fields:
+          - name: slug
+            label: 网址标识
+            type: string
+            required: true
+          - name: title
+            label: 资料名称
+            type: string
+            required: true
+          - name: summary
+            label: 资料说明
+            type: text
+            required: true
+          - name: category
+            label: 分类
+            type: string
+            required: true
+          - name: url
+            label: 外部链接
+            type: string
+          - name: audience
+            label: 适用对象
+            type: string
+            required: true
+          - name: lastChecked
+            label: 最后核验
+            type: date
+            required: true
+          - name: featured
+            label: 首页推荐
+            type: boolean
+            default: false
+          - name: published
+            label: 公开发布
+            type: boolean
+            default: false
+
+settings:
+  commit:
+    identity: user
+    templates:
+      create: "content: 新增 {path}"
+      update: "content: 更新 {path}"
+      delete: "content: 删除 {path}"
+      rename: "content: 重命名 {oldPath} -> {newPath}"
+
+actions:
+  - name: rebuild-site
+    label: 检查并重新发布网站
+    workflow: deploy-pages.yml
+    ref: current
+    confirm:
+      title: 重新发布网站？
+      message: 系统会先检查全部内容，通过后再更新公开网站。
+      button: 开始检查
