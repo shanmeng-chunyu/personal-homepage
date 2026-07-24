@@ -8,6 +8,7 @@ import {
   Map,
 } from "lucide-react";
 import Link from "next/link";
+import { ProjectCover } from "./components/project-cover";
 import { SiteShell } from "./components/site-shell";
 import {
   campusPosts,
@@ -49,15 +50,13 @@ export default function Home() {
               </span>
               <span>{featuredProject.status}</span>
             </div>
-            <div className="project-art" aria-hidden="true">
-              <span className="art-window art-window-small" />
-              <span className="art-window art-window-main">
-                <i />
-                <i />
-                <i />
-              </span>
-              <span className="art-orbit" />
-            </div>
+            <ProjectCover
+              className="project-art"
+              cover={featuredProject.cover}
+              title={featuredProject.title}
+              priority
+              sizes="(max-width: 720px) calc(100vw - 80px), (max-width: 960px) 45vw, 480px"
+            />
             <div className="card-copy">
               <p className="card-kicker">{featuredProject.year}</p>
               <h2>{featuredProject.title}</h2>

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { ArrowUpRight, Code2 } from "lucide-react";
 import Link from "next/link";
 import { PageHeading } from "../components/page-heading";
+import { ProjectCover } from "../components/project-cover";
 import { SiteShell } from "../components/site-shell";
 import { projects } from "../lib/content";
 
@@ -27,6 +28,12 @@ export default function ProjectsPage() {
             <div className="catalog-icon" aria-hidden="true">
               <Code2 size={22} />
             </div>
+            <ProjectCover
+              className="catalog-cover"
+              cover={project.cover}
+              title={project.title}
+              sizes="(max-width: 720px) calc(100vw - 80px), (max-width: 960px) 40vw, 360px"
+            />
             <div className="catalog-copy">
               <div className="catalog-meta">
                 <span>{project.year}</span>

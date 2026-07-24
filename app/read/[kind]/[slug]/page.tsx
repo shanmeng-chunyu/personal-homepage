@@ -3,6 +3,7 @@ import { ArrowLeft, ArrowUpRight, CalendarDays } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { MarkdownContent } from "../../../components/markdown-content";
+import { ProjectCover } from "../../../components/project-cover";
 import { SiteShell } from "../../../components/site-shell";
 import {
   allReadableEntries,
@@ -116,6 +117,15 @@ export default async function ReadingPage({ params }: PageProps) {
                 </a>
               ) : null}
             </div>
+          ) : null}
+          {project ? (
+            <ProjectCover
+              className="article-cover"
+              cover={project.cover}
+              title={project.title}
+              priority
+              sizes="(max-width: 720px) calc(100vw - 36px), 820px"
+            />
           ) : null}
         </header>
 

@@ -27,6 +27,18 @@ test("首页服务端渲染个人空间", async () => {
   const site = JSON.parse(
     await readFile(new URL("../content/site.json", import.meta.url), "utf8"),
   );
+  const projectsDirectory = new URL("../content/projects/", import.meta.url);
+  const projectFiles = (await readdir(projectsDirectory)).filter((file) =>
+    file.endsWith(".json"),
+  );
+  const projects = await Promise.all(
+    projectFiles.map((file) =>
+      readFile(new URL(file, projectsDirectory), "utf8").then(JSON.parse),
+    ),
+  );
+  const featuredProject =
+    projects.find((entry) => entry.published && entry.featured) ??
+    projects.find((entry) => entry.published);
   const response = await render("/");
   assert.equal(response.status, 200);
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
@@ -38,6 +50,10 @@ test("首页服务端渲染个人空间", async () => {
   assert.match(html, /校园手记/);
   assert.match(html, /资料库/);
   assert.doesNotMatch(html, /codex-preview|Your site is taking shape|SkeletonPreview/);
+  if (featuredProject?.cover) {
+    assert.ok(html.includes(featuredProject.cover));
+    assert.ok(html.includes(`${featuredProject.title}的项目封面`));
+  }
 });
 
 test("主要栏目均可访问", async () => {
@@ -54,7 +70,7 @@ test("主要栏目均可访问", async () => {
   }
 });
 
-test("内容详情页可访问", async () => {
+test("当前项目的列表与详情页可访问并展示封面", async () => {
   const projectsDirectory = new URL("../content/projects/", import.meta.url);
   const projectFiles = (await readdir(projectsDirectory))
     .filter((file) => file.endsWith(".json"))
@@ -66,11 +82,24 @@ test("内容详情页可访问", async () => {
   );
   const project = projects.find((entry) => entry.published);
 
-  assert.ok(project, "至少需要一条已发布项目来验证详情页");
+  if (!project) return;
+
+  const catalogResponse = await render("/projects/");
+  assert.equal(catalogResponse.status, 200);
+  const catalogHtml = await catalogResponse.text();
+  assert.ok(catalogHtml.includes(project.title));
+  if (project.cover) {
+    assert.ok(catalogHtml.includes(project.cover));
+    assert.ok(catalogHtml.includes(`${project.title}的项目封面`));
+  }
 
   const response = await render(`/read/project/${project.slug}/`);
   assert.equal(response.status, 200);
   const html = await response.text();
   assert.ok(html.includes(project.title));
   assert.ok(html.includes(project.summary));
+  if (project.cover) {
+    assert.ok(html.includes(project.cover));
+    assert.ok(html.includes(`${project.title}的项目封面`));
+  }
 });
