@@ -41,6 +41,40 @@ test("B站主页和 QQ 可选且填写时会校验格式", async () => {
   assert.equal(configured.qq, "123456789");
 });
 
+test("CMS 省略可选字段或填写空值标记时会安全归一化", async () => {
+  const source = await readJson(
+    new URL("projects/emoji.json", contentRoot),
+  );
+  const required = { ...source };
+  for (const field of [
+    "github",
+    "demo",
+    "cover",
+    "tech",
+    "featured",
+    "published",
+  ]) {
+    delete required[field];
+  }
+
+  const omitted = projectSchema.parse(required);
+  assert.equal(omitted.github, "");
+  assert.equal(omitted.demo, "");
+  assert.equal(omitted.cover, "");
+  assert.deepEqual(omitted.tech, []);
+  assert.equal(omitted.featured, false);
+  assert.equal(omitted.published, false);
+
+  for (const marker of ['""', "''", "“”", "‘’", "   "]) {
+    assert.equal(projectSchema.parse({ ...source, demo: marker }).demo, "");
+  }
+
+  assert.throws(
+    () => projectSchema.parse({ ...source, demo: "不是网址" }),
+    /Invalid URL/,
+  );
+});
+
 test("所有增量内容都满足契约且 slug 唯一", async () => {
   const groups = [
     [await readCollection("projects"), projectSchema],

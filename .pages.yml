@@ -110,9 +110,11 @@ content:
           - name: github
             label: GitHub 地址
             type: string
+            description: 没有链接时直接留空，不要输入引号或“无”。
           - name: demo
             label: 在线演示地址
             type: string
+            description: 没有在线演示时直接留空，不要输入引号或“无”。
           - name: cover
             label: 封面
             type: image
