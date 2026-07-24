@@ -28,7 +28,7 @@ test("首页服务端渲染个人空间", async () => {
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
 
   const html = await response.text();
-  assert.match(html, /@YourID/);
+  assert.match(html, /@shanmeng-chunyu/);
   assert.match(html, /在南大生活，也做点有用的小东西/);
   assert.match(html, /置顶项目/);
   assert.match(html, /校园手记/);
