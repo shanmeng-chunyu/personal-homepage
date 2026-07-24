@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { readFile } from "node:fs/promises";
+import { readFile, readdir } from "node:fs/promises";
 import test from "node:test";
 
 async function render(pathname = "/") {
@@ -55,9 +55,22 @@ test("主要栏目均可访问", async () => {
 });
 
 test("内容详情页可访问", async () => {
-  const response = await render("/read/project/course-companion/");
+  const projectsDirectory = new URL("../content/projects/", import.meta.url);
+  const projectFiles = (await readdir(projectsDirectory))
+    .filter((file) => file.endsWith(".json"))
+    .sort();
+  const projects = await Promise.all(
+    projectFiles.map((file) =>
+      readFile(new URL(file, projectsDirectory), "utf8").then(JSON.parse),
+    ),
+  );
+  const project = projects.find((entry) => entry.published);
+
+  assert.ok(project, "至少需要一条已发布项目来验证详情页");
+
+  const response = await render(`/read/project/${project.slug}/`);
   assert.equal(response.status, 200);
   const html = await response.text();
-  assert.match(html, /课程信息整理工具/);
-  assert.match(html, /为什么做它/);
+  assert.ok(html.includes(project.title));
+  assert.ok(html.includes(project.summary));
 });

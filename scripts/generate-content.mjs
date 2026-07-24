@@ -1,6 +1,7 @@
-import { mkdir, readFile, readdir, writeFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { listJsonFiles } from "./content-files.mjs";
 import {
   articleSchema,
   projectSchema,
@@ -16,9 +17,7 @@ async function readJson(filePath) {
 
 async function readCollection(folder, schema) {
   const directory = path.join(root, "content", folder);
-  const files = (await readdir(directory))
-    .filter((file) => file.endsWith(".json"))
-    .sort();
+  const files = await listJsonFiles(directory);
 
   const entries = await Promise.all(
     files.map(async (file) => {

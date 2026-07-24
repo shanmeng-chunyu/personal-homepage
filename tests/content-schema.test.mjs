@@ -7,6 +7,7 @@ import {
   resourceSchema,
   siteSchema,
 } from "../scripts/content-schema.mjs";
+import { listJsonFiles } from "../scripts/content-files.mjs";
 
 const contentRoot = new URL("../content/", import.meta.url);
 
@@ -16,9 +17,20 @@ async function readJson(url) {
 
 async function readCollection(folder) {
   const directory = new URL(`${folder}/`, contentRoot);
-  const files = (await readdir(directory)).filter((name) => name.endsWith(".json"));
+  const files = (await readdir(directory))
+    .filter((name) => name.endsWith(".json"))
+    .sort();
   return Promise.all(files.map((name) => readJson(new URL(name, directory))));
 }
+
+test("内容栏目为空且目录不存在时按空列表处理", async () => {
+  const missingDirectory = new URL(
+    "fixtures/collection-that-does-not-exist/",
+    import.meta.url,
+  );
+
+  assert.deepEqual(await listJsonFiles(missingDirectory), []);
+});
 
 test("个人设置不包含真实姓名字段", async () => {
   const site = siteSchema.parse(await readJson(new URL("site.json", contentRoot)));
