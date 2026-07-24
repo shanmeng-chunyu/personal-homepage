@@ -4,6 +4,7 @@ import {
   projectData,
   resourceData,
   siteData,
+  videoData,
 } from "../generated/content";
 
 export type SiteConfig = {
@@ -15,10 +16,19 @@ export type SiteConfig = {
   avatar: string;
   github: string;
   bilibili: string;
+  bilibiliVideo1: string;
+  bilibiliVideo2: string;
   qq: string;
   email: string;
   siteUrl: string;
   keywords: readonly string[];
+};
+
+export type BilibiliVideo = {
+  url: string;
+  bvid: string;
+  title: string;
+  cover: string;
 };
 
 export type Project = {
@@ -63,6 +73,7 @@ export type Resource = {
 };
 
 export const site = siteData as SiteConfig;
+export const bilibiliVideos = videoData as readonly BilibiliVideo[];
 export const projects = (projectData as readonly Project[])
   .filter((entry) => entry.published)
   .sort((a, b) => Number(b.featured) - Number(a.featured) || b.year - a.year);

@@ -42,6 +42,14 @@ content:
         label: B站主页地址
         type: string
         description: 填写以 https:// 开头的完整个人主页链接；留空时网站不会显示。
+      - name: bilibiliVideo1
+        label: 首页 B站视频 1
+        type: string
+        description: 填写 bilibili.com/video/BV... 或 b23.tv 视频链接；标题和封面会在发布时自动读取，留空时隐藏。
+      - name: bilibiliVideo2
+        label: 首页 B站视频 2
+        type: string
+        description: 填写 bilibili.com/video/BV... 或 b23.tv 视频链接；标题和封面会在发布时自动读取，留空时隐藏。
       - name: qq
         label: 公开 QQ 号
         type: string

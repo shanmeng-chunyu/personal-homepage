@@ -47,13 +47,37 @@ test("首页服务端渲染个人空间", async () => {
   assert.ok(html.includes(site.networkId));
   assert.match(html, /在南大生活，也做点有用的小东西/);
   assert.match(html, /置顶项目/);
-  assert.match(html, /校园手记/);
+  assert.match(html, /南大生活/);
   assert.match(html, /资料库/);
   assert.doesNotMatch(html, /codex-preview|Your site is taking shape|SkeletonPreview/);
   if (featuredProject?.cover) {
     assert.ok(html.includes(featuredProject.cover));
     assert.ok(html.includes(`${featuredProject.title}的项目封面`));
   }
+});
+
+test("B站视频卡片保持 4:3，并在填写链接后出现在首页", async () => {
+  const styles = await readFile(
+    new URL("../app/globals.css", import.meta.url),
+    "utf8",
+  );
+  assert.match(
+    styles,
+    /\.video-card-cover\s*\{[^}]*aspect-ratio:\s*4\s*\/\s*3;/s,
+  );
+
+  const generated = await readFile(
+    new URL("../app/generated/content.ts", import.meta.url),
+    "utf8",
+  );
+  if (!generated.includes("export const videoData = [\n  {")) return;
+
+  const response = await render("/");
+  assert.equal(response.status, 200);
+  const html = await response.text();
+  assert.match(html, /最近的视频/);
+  assert.match(html, /video-card-cover/);
+  assert.match(html, /前往 B站观看/);
 });
 
 test("主要栏目均可访问", async () => {

@@ -9,6 +9,12 @@ const nextConfig: NextConfig = {
   assetPrefix: basePath || undefined,
   images: {
     unoptimized: true,
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "**.hdslb.com",
+      },
+    ],
   },
 };
 

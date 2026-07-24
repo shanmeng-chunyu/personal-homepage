@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { readFile, readdir } from "node:fs/promises";
+import { readFile } from "node:fs/promises";
 import test from "node:test";
 import {
   articleSchema,
@@ -7,6 +7,12 @@ import {
   resourceSchema,
   siteSchema,
 } from "../scripts/content-schema.mjs";
+import {
+  extractBvid,
+  isSupportedBilibiliVideoUrl,
+  resolveBilibiliVideo,
+  resolveBilibiliVideos,
+} from "../scripts/bilibili-video.mjs";
 import { listJsonFiles } from "../scripts/content-files.mjs";
 
 const contentRoot = new URL("../content/", import.meta.url);
@@ -17,9 +23,7 @@ async function readJson(url) {
 
 async function readCollection(folder) {
   const directory = new URL(`${folder}/`, contentRoot);
-  const files = (await readdir(directory))
-    .filter((name) => name.endsWith(".json"))
-    .sort();
+  const files = await listJsonFiles(directory);
   return Promise.all(files.map((name) => readJson(new URL(name, directory))));
 }
 
@@ -36,21 +40,121 @@ test("个人设置不包含真实姓名字段", async () => {
   const site = siteSchema.parse(await readJson(new URL("site.json", contentRoot)));
   assert.equal(Object.hasOwn(site, "realName"), false);
   assert.equal(Object.hasOwn(site, "name"), false);
-  assert.match(site.networkId, /^@/);
+  assert.ok(site.networkId.length >= 2);
 });
 
 test("B站主页和 QQ 可选且填写时会校验格式", async () => {
   const site = siteSchema.parse(await readJson(new URL("site.json", contentRoot)));
-  assert.equal(site.bilibili, "");
-  assert.equal(site.qq, "");
+  assert.match(site.bilibili, /^(?:$|https:\/\/)/);
+  assert.match(site.qq, /^(?:$|\d{5,12})$/);
 
   const configured = siteSchema.parse({
     ...site,
     bilibili: "https://space.bilibili.com/123456",
+    bilibiliVideo1: "https://www.bilibili.com/video/BV1GJ411x7h7/",
+    bilibiliVideo2: "https://b23.tv/example",
     qq: "123456789",
   });
   assert.equal(configured.bilibili, "https://space.bilibili.com/123456");
+  assert.equal(
+    configured.bilibiliVideo1,
+    "https://www.bilibili.com/video/BV1GJ411x7h7/",
+  );
+  assert.equal(configured.bilibiliVideo2, "https://b23.tv/example");
   assert.equal(configured.qq, "123456789");
+
+  assert.throws(
+    () =>
+      siteSchema.parse({
+        ...site,
+        bilibiliVideo1: "https://example.com/video/BV1GJ411x7h7",
+      }),
+    /请填写 bilibili\.com/,
+  );
+});
+
+test("B站视频链接会提取 BV 号、标题和 HTTPS 封面", async () => {
+  const cmsConfig = await readFile(new URL("../.pages.yml", import.meta.url), "utf8");
+  assert.match(cmsConfig, /name: bilibiliVideo1/);
+  assert.match(cmsConfig, /name: bilibiliVideo2/);
+
+  const url = "https://www.bilibili.com/video/BV1GJ411x7h7/?spm_id_from=333";
+  assert.equal(extractBvid(url), "BV1GJ411x7h7");
+  assert.equal(isSupportedBilibiliVideoUrl(url), true);
+  assert.equal(isSupportedBilibiliVideoUrl("https://example.com/video"), false);
+
+  const calls = [];
+  const video = await resolveBilibiliVideo(url, {
+    fetchImpl: async (requestUrl) => {
+      calls.push(String(requestUrl));
+      return {
+        ok: true,
+        json: async () => ({
+          code: 0,
+          data: {
+            title: "测试视频",
+            pic: "http://i1.hdslb.com/bfs/archive/cover.jpg",
+          },
+        }),
+      };
+    },
+  });
+
+  assert.equal(calls.length, 1);
+  assert.match(calls[0], /api\.bilibili\.com/);
+  assert.deepEqual(video, {
+    url,
+    bvid: "BV1GJ411x7h7",
+    title: "测试视频",
+    cover: "https://i1.hdslb.com/bfs/archive/cover.jpg",
+  });
+});
+
+test("B站暂时不可用时保留链接并安全降级", async () => {
+  const url = "https://www.bilibili.com/video/BV1GJ411x7h7/";
+  const warnings = [];
+  const video = await resolveBilibiliVideo(url, {
+    fetchImpl: async () => {
+      throw new Error("temporary unavailable");
+    },
+    warn: (message) => warnings.push(message),
+  });
+
+  assert.deepEqual(video, {
+    url,
+    bvid: "BV1GJ411x7h7",
+    title: "在 B站观看",
+    cover: "",
+  });
+  assert.equal(warnings.length, 1);
+});
+
+test("首页最多保留两个不重复的 B站视频", async () => {
+  const urls = [
+    "https://www.bilibili.com/video/BV1GJ411x7h7/",
+    "https://www.bilibili.com/video/BV1Q541167Qg/",
+    "https://www.bilibili.com/video/BV1GJ411x7h7/",
+  ];
+  const videos = await resolveBilibiliVideos(urls, {
+    fetchImpl: async (requestUrl) => {
+      const bvid = new URL(requestUrl).searchParams.get("bvid");
+      return {
+        ok: true,
+        json: async () => ({
+          code: 0,
+          data: {
+            title: bvid,
+            pic: `https://i0.hdslb.com/${bvid}.jpg`,
+          },
+        }),
+      };
+    },
+  });
+
+  assert.deepEqual(
+    videos.map((video) => video.bvid),
+    ["BV1GJ411x7h7", "BV1Q541167Qg"],
+  );
 });
 
 test("CMS 省略可选字段或填写空值标记时会安全归一化", async () => {

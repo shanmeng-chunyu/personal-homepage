@@ -31,6 +31,23 @@ const optionalQq = z.preprocess(
     z.string().regex(/^\d{5,12}$/, "QQ 号应为 5 至 12 位数字"),
   ]),
 );
+const optionalBilibiliVideoUrl = z.preprocess(
+  normalizeOptionalString,
+  z.union([
+    z.literal(""),
+    z
+      .string()
+      .url()
+      .refine(
+        (value) =>
+          /^https?:\/\/(?:www\.)?b23\.tv\//i.test(value) ||
+          /^https?:\/\/(?:www\.|m\.)?bilibili\.com\/video\/BV[0-9A-Za-z]{10}/i.test(
+            value,
+          ),
+        "请填写 bilibili.com/video/BV... 或 b23.tv 的视频链接",
+      ),
+  ]),
+);
 const optionalTags = z.array(z.string().min(1)).default([]);
 const optionalFlag = z.boolean().default(false);
 
@@ -44,6 +61,8 @@ export const siteSchema = z
     avatar: optionalText,
     github: optionalUrl,
     bilibili: optionalUrl,
+    bilibiliVideo1: optionalBilibiliVideoUrl,
+    bilibiliVideo2: optionalBilibiliVideoUrl,
     qq: optionalQq,
     email: optionalEmail,
     siteUrl: z.string().url(),

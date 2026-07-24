@@ -6,12 +6,15 @@ import {
   Clock3,
   Code2,
   Map,
+  Tv,
 } from "lucide-react";
 import Link from "next/link";
+import { BilibiliVideoCard } from "./components/bilibili-video-card";
 import { ProjectCover } from "./components/project-cover";
 import { SiteShell } from "./components/site-shell";
 import {
   campusPosts,
+  bilibiliVideos,
   formatDate,
   notes,
   projects,
@@ -173,6 +176,35 @@ export default function Home() {
           </article>
         ) : null}
       </section>
+
+      {bilibiliVideos.length ? (
+        <section className="video-showcase" aria-labelledby="video-showcase-title">
+          <div className="video-showcase-heading">
+            <div>
+              <p className="eyebrow">RECENT VIDEOS</p>
+              <h2 id="video-showcase-title">
+                <Tv size={20} aria-hidden="true" />
+                最近的视频
+              </h2>
+            </div>
+            {site.bilibili ? (
+              <a href={site.bilibili} target="_blank" rel="noreferrer">
+                查看 B站主页
+                <ArrowUpRight size={16} aria-hidden="true" />
+              </a>
+            ) : null}
+          </div>
+          <div className="video-grid">
+            {bilibiliVideos.slice(0, 2).map((video, index) => (
+              <BilibiliVideoCard
+                video={video}
+                priority={index === 0}
+                key={video.url}
+              />
+            ))}
+          </div>
+        </section>
+      ) : null}
 
       <footer className="home-footer">
         <span>由内容慢慢构成，而不是由真实姓名定义。</span>

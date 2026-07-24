@@ -2,6 +2,7 @@ import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { listJsonFiles } from "./content-files.mjs";
+import { resolveBilibiliVideos } from "./bilibili-video.mjs";
 import {
   articleSchema,
   projectSchema,
@@ -40,6 +41,10 @@ async function readCollection(folder, schema) {
 const site = siteSchema.parse(
   await readJson(path.join(root, "content", "site.json")),
 );
+const videos = await resolveBilibiliVideos([
+  site.bilibiliVideo1,
+  site.bilibiliVideo2,
+]);
 const [projects, campusPosts, notes, resources] = await Promise.all([
   readCollection("projects", projectSchema),
   readCollection("campus", articleSchema),
@@ -49,6 +54,7 @@ const [projects, campusPosts, notes, resources] = await Promise.all([
 
 const generated = `/* This file is generated. Edit files under /content instead. */
 export const siteData = ${JSON.stringify(site, null, 2)} as const;
+export const videoData = ${JSON.stringify(videos, null, 2)} as const;
 export const projectData = ${JSON.stringify(projects, null, 2)} as const;
 export const campusData = ${JSON.stringify(campusPosts, null, 2)} as const;
 export const noteData = ${JSON.stringify(notes, null, 2)} as const;
