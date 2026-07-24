@@ -1,0 +1,12 @@
+{
+  "slug": "course-qna-agent",
+  "title": "课程问答Agent",
+  "summary": "一个基于XSkill思路做的自进化的课程回答Agent",
+  "body": "# 使用方法\n\n### 一、创建课程\n点击左上角创建新课程，或者触发新对话时自行创建\n\n### 二、上传课件\n在右下角上传课件，会自动总结知识点。知识点会跨对话保存，加载时间较长\n\n### 三、上传PDF\n在右下角上传PDF，不跨对话，可以本对话内问答，加载时间短\n\n### 四、触发进化\n达到一定对话轮次后会触发自进化，或者右下角自行点击进化。会根据对话内容改进知识点和总结风格\n\n根据一学期使用，大体上会越来越了解这门课程（或许）",
+  "year": 2028,
+  "status": "已完成",
+  "github": "https://github.com/shanmeng-chunyu/course-qna-agent",
+  "cover": "/media/20260724223740.png",
+  "featured": false,
+  "published": true
+}
