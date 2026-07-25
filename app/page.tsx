@@ -44,51 +44,61 @@ export default function Home() {
       </header>
 
       <section className="home-highlight-grid" aria-label="随笔、南大生活与近况">
-        {recentNote ? (
-          <article className="bento-card recent-note">
-            <div className="card-topline">
-              <span>
-                <CalendarDays size={16} aria-hidden="true" />
-                最近随笔
-              </span>
-              <span>{formatDate(recentNote.date)}</span>
-            </div>
-            <div className="card-copy">
-              <p className="card-kicker">{recentNote.category}</p>
-              <h2>{recentNote.title}</h2>
-              <p>{recentNote.summary}</p>
-            </div>
-            <Link
-              className="card-link"
-              href={`/read/note/${recentNote.slug}`}
-            >
-              阅读随笔
-              <ArrowRight size={17} aria-hidden="true" />
-            </Link>
-          </article>
-        ) : null}
+        <article className="bento-card recent-note">
+          <div className="card-topline">
+            <span>
+              <CalendarDays size={16} aria-hidden="true" />
+              最近随笔
+            </span>
+            <span>{recentNote ? formatDate(recentNote.date) : "等待记录"}</span>
+          </div>
+          <div className="card-copy">
+            <p className="card-kicker">{recentNote?.category ?? "随笔"}</p>
+            <h2>{recentNote?.title ?? "新的想法还在酝酿中"}</h2>
+            <p>
+              {recentNote?.summary ??
+                "这里会慢慢收集学习、创造与日常生活中的想法。"}
+            </p>
+          </div>
+          <Link
+            className="card-link"
+            href={recentNote ? `/read/note/${recentNote.slug}` : "/notes"}
+          >
+            {recentNote ? "阅读随笔" : "浏览随笔"}
+            <ArrowRight size={17} aria-hidden="true" />
+          </Link>
+        </article>
 
-        {featuredCampus ? (
-          <article className="bento-card campus-feature">
-            <div className="campus-art" aria-hidden="true">
-              <Map size={32} />
-              <span />
-            </div>
-            <div className="card-copy">
-              <p className="card-kicker">校园手记</p>
-              <h2>{featuredCampus.title}</h2>
-              <p>{featuredCampus.summary}</p>
-            </div>
-            <Link
-              className="card-link"
-              href={`/read/campus/${featuredCampus.slug}`}
-              aria-label={`阅读校园手记：${featuredCampus.title}`}
-            >
-              继续阅读
-              <ArrowRight size={17} aria-hidden="true" />
-            </Link>
-          </article>
-        ) : null}
+        <article className="bento-card campus-feature">
+          <div className="campus-art" aria-hidden="true">
+            <Map size={32} />
+            <span />
+          </div>
+          <div className="card-copy">
+            <p className="card-kicker">南大生活</p>
+            <h2>{featuredCampus?.title ?? "在南大生活的切片"}</h2>
+            <p>
+              {featuredCampus?.summary ??
+                "这里会记录校园里的经验、观察，以及值得留存的小事。"}
+            </p>
+          </div>
+          <Link
+            className="card-link"
+            href={
+              featuredCampus
+                ? `/read/campus/${featuredCampus.slug}`
+                : "/campus"
+            }
+            aria-label={
+              featuredCampus
+                ? `阅读南大生活：${featuredCampus.title}`
+                : "浏览南大生活"
+            }
+          >
+            {featuredCampus ? "继续阅读" : "浏览南大生活"}
+            <ArrowRight size={17} aria-hidden="true" />
+          </Link>
+        </article>
 
         <article className="bento-card now-card">
           <div className="card-topline">
