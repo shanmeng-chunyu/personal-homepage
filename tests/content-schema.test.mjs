@@ -191,6 +191,56 @@ test("CMS 省略可选字段或填写空值标记时会安全归一化", async (
   );
 });
 
+test("资料库区分外部链接和站内文章，并检查发布目标", () => {
+  const shared = {
+    slug: "example-resource",
+    title: "示例资料",
+    summary: "用于验证两种资料打开方式。",
+    category: "示例",
+    audience: "所有同学",
+    lastChecked: "2026-07-25",
+    featured: false,
+    published: true,
+  };
+
+  const external = resourceSchema.parse({
+    ...shared,
+    entryType: "external",
+    url: "https://example.com/resource",
+    body: "",
+  });
+  assert.equal(external.entryType, "external");
+
+  const article = resourceSchema.parse({
+    ...shared,
+    entryType: "article",
+    url: "",
+    body: "## 站内正文",
+  });
+  assert.equal(article.entryType, "article");
+
+  assert.throws(
+    () =>
+      resourceSchema.parse({
+        ...shared,
+        entryType: "external",
+        url: "",
+        body: "",
+      }),
+    /必须填写外部链接/,
+  );
+  assert.throws(
+    () =>
+      resourceSchema.parse({
+        ...shared,
+        entryType: "article",
+        url: "",
+        body: "",
+      }),
+    /必须填写正文/,
+  );
+});
+
 test("所有增量内容都满足契约且 slug 唯一", async () => {
   const groups = [
     [await readCollection("projects"), projectSchema],

@@ -10,24 +10,35 @@ import {
   formatDate,
   type Article,
   type Project,
+  type Resource,
 } from "../../../lib/content";
 
-type Kind = "project" | "campus" | "note";
+type Kind = "project" | "campus" | "note" | "resource";
 type PageProps = {
   params: Promise<{ kind: string; slug: string }>;
 };
 
 const routeMeta: Record<
   Kind,
-  { active: "projects" | "campus" | "notes"; label: string; back: string }
+  {
+    active: "projects" | "campus" | "notes" | "resources";
+    label: string;
+    back: string;
+  }
 > = {
   project: { active: "projects", label: "项目", back: "/projects" },
   campus: { active: "campus", label: "校园手记", back: "/campus" },
   note: { active: "notes", label: "随笔", back: "/notes" },
+  resource: { active: "resources", label: "资料库", back: "/resources" },
 };
 
 function isKind(value: string): value is Kind {
-  return value === "project" || value === "campus" || value === "note";
+  return (
+    value === "project" ||
+    value === "campus" ||
+    value === "note" ||
+    value === "resource"
+  );
 }
 
 function getEntry(kind: string, slug: string) {
@@ -66,7 +77,12 @@ export default async function ReadingPage({ params }: PageProps) {
   const meta = routeMeta[kind];
   const isProject = kind === "project";
   const project = isProject ? (entry as Project & { kind: Kind }) : null;
-  const article = !isProject ? (entry as Article & { kind: Kind }) : null;
+  const article =
+    kind === "campus" || kind === "note"
+      ? (entry as Article & { kind: Kind })
+      : null;
+  const resource =
+    kind === "resource" ? (entry as Resource & { kind: Kind }) : null;
 
   return (
     <SiteShell active={meta.active}>
@@ -99,6 +115,15 @@ export default async function ReadingPage({ params }: PageProps) {
                 {article.tags.map((tag) => (
                   <span key={tag}>{tag}</span>
                 ))}
+              </>
+            ) : resource ? (
+              <>
+                <span>
+                  <CalendarDays size={15} aria-hidden="true" />
+                  {formatDate(resource.lastChecked)}
+                </span>
+                <span>{resource.category}</span>
+                <span>适合：{resource.audience}</span>
               </>
             ) : null}
           </div>
@@ -134,7 +159,11 @@ export default async function ReadingPage({ params }: PageProps) {
         <footer className="article-footer">
           <span>最后更新</span>
           <strong>
-            {article ? formatDate(article.updated) : `${project?.year ?? ""}`}
+            {article
+              ? formatDate(article.updated)
+              : resource
+                ? formatDate(resource.lastChecked)
+                : `${project?.year ?? ""}`}
           </strong>
         </footer>
       </article>

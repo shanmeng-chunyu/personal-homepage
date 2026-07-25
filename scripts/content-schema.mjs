@@ -109,10 +109,47 @@ export const resourceSchema = z
     title: z.string().min(1),
     summary: z.string().min(1),
     category: z.string().min(1),
+    entryType: z.enum(["external", "article"]).default("external"),
     url: optionalUrl,
+    body: optionalText,
     audience: z.string().min(1),
     lastChecked: date,
     featured: optionalFlag,
     published: optionalFlag,
   })
-  .strict();
+  .strict()
+  .superRefine((resource, context) => {
+    if (resource.entryType === "external" && resource.body) {
+      context.addIssue({
+        code: "custom",
+        path: ["body"],
+        message: "外部链接类型不应填写站内正文",
+      });
+    }
+
+    if (resource.entryType === "article" && resource.url) {
+      context.addIssue({
+        code: "custom",
+        path: ["url"],
+        message: "站内文章类型不应填写外部链接",
+      });
+    }
+
+    if (!resource.published) return;
+
+    if (resource.entryType === "external" && !resource.url) {
+      context.addIssue({
+        code: "custom",
+        path: ["url"],
+        message: "公开发布外部资源前必须填写外部链接",
+      });
+    }
+
+    if (resource.entryType === "article" && !resource.body) {
+      context.addIssue({
+        code: "custom",
+        path: ["body"],
+        message: "公开发布站内文章前必须填写正文",
+      });
+    }
+  });

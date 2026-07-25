@@ -131,7 +131,14 @@ export default function Home() {
                   <strong>{resource.title}</strong>
                   <span>{resource.category}</span>
                 </div>
-                {resource.url ? (
+                {resource.entryType === "article" ? (
+                  <Link
+                    href={`/read/resource/${resource.slug}`}
+                    aria-label={`阅读站内资料：${resource.title}`}
+                  >
+                    <ArrowRight size={16} aria-hidden="true" />
+                  </Link>
+                ) : resource.url ? (
                   <a
                     href={resource.url}
                     target="_blank"

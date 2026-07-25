@@ -1,4 +1,4 @@
-import { campusPosts, notes, site } from "../lib/content";
+import { campusPosts, notes, readableResources, site } from "../lib/content";
 
 export const dynamic = "force-static";
 
@@ -16,6 +16,11 @@ export function GET() {
   const entries = [
     ...campusPosts.map((entry) => ({ ...entry, kind: "campus" })),
     ...notes.map((entry) => ({ ...entry, kind: "note" })),
+    ...readableResources.map((entry) => ({
+      ...entry,
+      kind: "resource",
+      date: entry.lastChecked,
+    })),
   ].sort((a, b) => b.date.localeCompare(a.date));
 
   const items = entries

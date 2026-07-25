@@ -258,7 +258,7 @@ content:
         filename: "{primary}.json"
         view:
           primary: title
-          fields: [title, category, lastChecked, published]
+          fields: [title, entryType, category, lastChecked, published]
           sort: lastChecked
           order: desc
         fields:
@@ -278,15 +278,35 @@ content:
             label: 分类
             type: string
             required: true
+          - name: entryType
+            label: 打开方式
+            type: select
+            required: true
+            default: external
+            description: 外部链接会打开其他网站；站内文章会进入本站的文字阅读页。
+            options:
+              values:
+                - name: external
+                  label: 外部链接
+                - name: article
+                  label: 站内文章
           - name: url
-            label: 外部链接
+            label: 外部链接（外部链接类型填写）
             type: string
+            description: 选择“外部链接”时填写完整网址；选择“站内文章”时留空。
+          - name: body
+            label: 站内正文（站内文章类型填写）
+            type: rich-text
+            description: 选择“站内文章”时填写；支持标题、列表、链接和图片，选择“外部链接”时留空。
+            options:
+              format: markdown
+              media: true
           - name: audience
             label: 适用对象
             type: string
             required: true
           - name: lastChecked
-            label: 最后核验
+            label: 最后核验或更新
             type: date
             required: true
           - name: featured

@@ -65,7 +65,9 @@ export type Resource = {
   title: string;
   summary: string;
   category: string;
+  entryType: "external" | "article";
   url: string;
+  body: string;
   audience: string;
   lastChecked: string;
   featured: boolean;
@@ -90,11 +92,18 @@ export const resources = (resourceData as readonly Resource[])
       Number(b.featured) - Number(a.featured) ||
       b.lastChecked.localeCompare(a.lastChecked),
   );
+export const readableResources = resources.filter(
+  (entry) => entry.entryType === "article",
+);
 
 export const allReadableEntries = [
   ...projects.map((entry) => ({ ...entry, kind: "project" as const })),
   ...campusPosts.map((entry) => ({ ...entry, kind: "campus" as const })),
   ...notes.map((entry) => ({ ...entry, kind: "note" as const })),
+  ...readableResources.map((entry) => ({
+    ...entry,
+    kind: "resource" as const,
+  })),
 ];
 
 export function formatDate(value: string) {

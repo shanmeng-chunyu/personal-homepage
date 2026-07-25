@@ -127,3 +127,37 @@ test("当前项目的列表与详情页可访问并展示封面", async () => {
     assert.ok(html.includes(`${project.title}的项目封面`));
   }
 });
+
+test("资料库的站内文章会从卡片进入正文页", async () => {
+  const resourcesDirectory = new URL("../content/resources/", import.meta.url);
+  const resourceFiles = (await readdir(resourcesDirectory)).filter((file) =>
+    file.endsWith(".json"),
+  );
+  const resources = await Promise.all(
+    resourceFiles.map((file) =>
+      readFile(new URL(file, resourcesDirectory), "utf8").then(JSON.parse),
+    ),
+  );
+  const article = resources.find(
+    (entry) =>
+      entry.published && entry.entryType === "article" && entry.body,
+  );
+
+  assert.ok(article, "至少需要一篇已发布的站内资料用于验证");
+
+  const catalogResponse = await render("/resources/");
+  assert.equal(catalogResponse.status, 200);
+  const catalogHtml = await catalogResponse.text();
+  assert.ok(catalogHtml.includes(article.title));
+  assert.match(catalogHtml, /站内文章/);
+  assert.match(catalogHtml, /阅读全文/);
+  assert.ok(catalogHtml.includes(`/read/resource/${article.slug}`));
+
+  const response = await render(`/read/resource/${article.slug}/`);
+  assert.equal(response.status, 200);
+  const html = await response.text();
+  assert.ok(html.includes(article.title));
+  assert.ok(html.includes(article.summary));
+  assert.match(html, /class="back-link"/);
+  assert.match(html, /href="\/resources"/);
+});

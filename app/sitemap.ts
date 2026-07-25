@@ -3,6 +3,7 @@ import {
   campusPosts,
   notes,
   projects,
+  readableResources,
   site,
 } from "./lib/content";
 
@@ -14,8 +15,11 @@ function absolute(pathname: string) {
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const staticRoutes = ["", "/projects", "/campus", "/resources", "/notes", "/about"];
-  const latestUpdate = [...campusPosts, ...notes]
-    .map((entry) => entry.updated)
+  const latestUpdate = [
+    ...campusPosts.map((entry) => entry.updated),
+    ...notes.map((entry) => entry.updated),
+    ...readableResources.map((entry) => entry.lastChecked),
+  ]
     .sort()
     .at(-1);
 
@@ -41,6 +45,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...notes.map((entry) => ({
       url: absolute(`/read/note/${entry.slug}/`),
       lastModified: new Date(entry.updated),
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
+    })),
+    ...readableResources.map((entry) => ({
+      url: absolute(`/read/resource/${entry.slug}/`),
+      lastModified: new Date(entry.lastChecked),
       changeFrequency: "monthly" as const,
       priority: 0.6,
     })),
