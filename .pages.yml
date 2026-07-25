@@ -326,13 +326,3 @@ settings:
       update: "content: 更新 {path}"
       delete: "content: 删除 {path}"
       rename: "content: 重命名 {oldPath} -> {newPath}"
-
-actions:
-  - name: rebuild-site
-    label: 检查并重新发布网站
-    workflow: deploy-pages.yml
-    ref: current
-    confirm:
-      title: 重新发布网站？
-      message: 系统会先检查全部内容，通过后再更新公开网站。
-      button: 开始检查
