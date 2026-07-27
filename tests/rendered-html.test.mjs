@@ -46,7 +46,7 @@ test("首页服务端渲染个人空间", async () => {
   const html = await response.text();
   assert.ok(html.includes(site.networkId));
   assert.match(html, /在南大生活，也做点有用的小东西/);
-  assert.match(html, /置顶项目/);
+  assert.match(html, /项目展示/);
   assert.match(html, /南大生活/);
   assert.match(html, /资料库/);
   assert.doesNotMatch(html, /codex-preview|Your site is taking shape|SkeletonPreview/);
@@ -160,4 +160,23 @@ test("资料库的站内文章会从卡片进入正文页", async () => {
   assert.ok(html.includes(article.summary));
   assert.match(html, /class="back-link"/);
   assert.match(html, /href="\/resources"/);
+});
+
+test("正文图片会修正站内路径并响应式显示", async () => {
+  const component = await readFile(
+    new URL("../app/components/markdown-content.tsx", import.meta.url),
+    "utf8",
+  );
+  assert.match(component, /withBasePath\(src\)/);
+  assert.match(component, /loading="lazy"/);
+  assert.match(component, /decoding="async"/);
+
+  const styles = await readFile(
+    new URL("../app/globals.css", import.meta.url),
+    "utf8",
+  );
+  assert.match(
+    styles,
+    /\.prose img\s*\{[^}]*max-width:\s*100%;[^}]*height:\s*auto;/s,
+  );
 });

@@ -1206,6 +1206,18 @@ a {
   border-bottom: 1px solid currentColor;
 }
 
+.prose img {
+  display: block;
+  width: auto;
+  max-width: 100%;
+  height: auto;
+  margin: 2rem auto;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--surface-soft);
+  box-shadow: 0 16px 42px rgba(31, 36, 51, 0.08);
+}
+
 .prose ul,
 .prose ol {
   padding-left: 1.5em;
@@ -1543,6 +1555,11 @@ a {
 
   .back-link {
     margin-bottom: 34px;
+  }
+
+  .prose img {
+    margin-block: 1.6rem;
+    border-radius: 12px;
   }
 }
 
