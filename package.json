@@ -7,6 +7,7 @@
   },
   "scripts": {
     "generate:content": "node scripts/generate-content.mjs",
+    "fiction:encrypt": "node scripts/encrypt-fiction.mjs",
     "predev": "npm run generate:content",
     "dev": "vinext dev",
     "prebuild": "npm run generate:content",

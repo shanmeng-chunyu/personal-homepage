@@ -86,6 +86,7 @@ test("主要栏目均可访问", async () => {
     ["/campus/", "在南大生活的切片"],
     ["/resources/", "值得保存的资料"],
     ["/notes/", "一些慢慢写下来的东西"],
+    ["/fiction/", "写下来的故事"],
     ["/about/", "关于这个网络住处"],
   ]) {
     const response = await render(pathname);

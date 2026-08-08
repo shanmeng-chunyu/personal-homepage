@@ -1,0 +1,10 @@
+{
+  "slug": "chapter-one",
+  "title": "第一章",
+  "summary": "这一章的简短摘要。",
+  "body": "# 第一章\n\n把正文写在这里。支持 Markdown。",
+  "date": "2026-08-08",
+  "updated": "2026-08-08",
+  "order": 1,
+  "published": true
+}

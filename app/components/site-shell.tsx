@@ -1,5 +1,6 @@
 import {
   BookOpenText,
+  BookMarked,
   FolderKanban,
   GitBranch,
   Home,
@@ -19,6 +20,7 @@ const navigation = [
   { key: "campus", label: "南大生活", href: "/campus", icon: MapPin },
   { key: "resources", label: "资料库", href: "/resources", icon: Library },
   { key: "notes", label: "随笔", href: "/notes", icon: BookOpenText },
+  { key: "fiction", label: "长篇", href: "/fiction", icon: BookMarked },
   { key: "about", label: "关于", href: "/about", icon: UserRound },
 ] as const;
 

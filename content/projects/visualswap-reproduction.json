@@ -1,0 +1,16 @@
+{
+  "slug": "visualswap-reproduction",
+  "title": "visualswap-reproduction",
+  "summary": "一个基于《Are VLMs Seeing or Just Saying? Uncovering the Illusion of Visual Re-examination》这篇论文进行的进一步实验探索",
+  "body": "在原论文实验的基础上做以下实验\n\n## 一、调换I、Q位置\n\n输入给模型的顺序从I、Q改变为Q、I，观察位置不同是否会对反思程度带来一定影响。\n\n预计做两组实验：\n\n1. 分别以Q、I的顺序测试图A、图B的正确率\n2. 以Q、I的顺序测试图A，然后将图A替换为图B，测试正确率。得到Probe\n\n## 二、有hint情况下的反思 (Main)\n\n反思词除了设置成通用的之外，还为每个样本添加了两条hint：\n\n1. 符合图B情况的hint，检测模型能否因为hint而提高反思程度。\n2. 不符合图A也不符合图B的hint，并给出一个符合这个hint的答案，检测模型是否会被错误的hint带跑偏。\n\n预计做四组实验：\n\n1. 替换为图B后，在反思词后面加上正确hint，测试正确率。\n2. 替换为图B后，在反思词后面加上错误hint，测试正确率。\n3. 替换为图B后，以User-turn形式加上正确hint，测试正确率。\n4. 替换为图B后，以User-turn形式加上错误hint，测试正确率。\n5. 直接对图B加上正确hint后的正确率。\n6. 直接对图B加上错误hint后的正确率。\n\n除了正确率之外还需要做的事：\n\n1. 判断每个样本后续推理情况：\n\n· 按照图B进行推理\n· 按照图A进行推理\n· 按照错误hint进行推理\n\n## TODO：\n\n1. 等卡做实验中\n2. 构建数据集中\n3. 打磨具体计划以及这些实验的合理性。\n\n",
+  "year": 2026,
+  "status": "进行中",
+  "tech": [
+    "模型幻觉",
+    "论文复现",
+    "研究计划"
+  ],
+  "github": "https://github.com/shanmeng-chunyu/visualswap-reproduction",
+  "featured": false,
+  "published": true
+}

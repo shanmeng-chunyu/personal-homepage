@@ -43,3 +43,4 @@ next-env.d.ts
 /work/
 /.openai/*.log
 /app/generated/content.ts
+/private-content/
