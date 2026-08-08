@@ -4,11 +4,11 @@ import Link from "next/link";
 import { PageHeading } from "../components/page-heading";
 import { ProjectCover } from "../components/project-cover";
 import { SiteShell } from "../components/site-shell";
-import { projects } from "../lib/content";
+import { projects, site } from "../lib/content";
 
 export const metadata: Metadata = {
   title: "项目",
-  description: "一些从真实需求出发、正在持续完成的小项目。",
+  description: site.projectsPageDescription,
 };
 
 export default function ProjectsPage() {
@@ -16,8 +16,8 @@ export default function ProjectsPage() {
     <SiteShell active="projects">
       <PageHeading
         eyebrow="PROJECTS"
-        title="做过和正在做的东西"
-        description="不按技术栈堆砌，只记录问题、过程与最终是否真的有用。"
+        title={site.projectsPageTitle}
+        description={site.projectsPageDescription}
         count={projects.length}
       />
 

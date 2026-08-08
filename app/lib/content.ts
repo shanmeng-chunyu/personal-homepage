@@ -11,6 +11,14 @@ export type SiteConfig = {
   networkId: string;
   tagline: string;
   intro: string;
+  projectsPageTitle: string;
+  projectsPageDescription: string;
+  campusPageTitle: string;
+  campusPageDescription: string;
+  notesPageTitle: string;
+  notesPageDescription: string;
+  resourcesPageTitle: string;
+  resourcesPageDescription: string;
   location: string;
   status: string;
   avatar: string;

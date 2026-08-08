@@ -3,11 +3,11 @@ import { ArrowRight, CalendarDays, MapPin } from "lucide-react";
 import Link from "next/link";
 import { PageHeading } from "../components/page-heading";
 import { SiteShell } from "../components/site-shell";
-import { campusPosts, formatDate } from "../lib/content";
+import { campusPosts, formatDate, site } from "../lib/content";
 
 export const metadata: Metadata = {
   title: "南大生活",
-  description: "在南京大学学习和生活时留下的经验、观察与校园切片。",
+  description: site.campusPageDescription,
 };
 
 export default function CampusPage() {
@@ -15,8 +15,8 @@ export default function CampusPage() {
     <SiteShell active="campus">
       <PageHeading
         eyebrow="CAMPUS NOTES"
-        title="在南大生活的切片"
-        description="这里不是官方指南，只是我亲自走过之后愿意留下的经验。涉及时间与地点的信息都会标注更新时间。"
+        title={site.campusPageTitle}
+        description={site.campusPageDescription}
         count={campusPosts.length}
       />
 

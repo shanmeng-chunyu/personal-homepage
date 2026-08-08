@@ -76,7 +76,7 @@ export default function Home() {
           </div>
           <div className="card-copy">
             <p className="card-kicker">南大生活</p>
-            <h2>{featuredCampus?.title ?? "在南大生活的切片"}</h2>
+            <h2>{featuredCampus?.title ?? site.campusPageTitle}</h2>
             <p>
               {featuredCampus?.summary ??
                 "这里会记录校园里的经验、观察，以及值得留存的小事。"}

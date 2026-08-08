@@ -3,11 +3,11 @@ import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { PageHeading } from "../components/page-heading";
 import { SiteShell } from "../components/site-shell";
-import { formatDate, notes } from "../lib/content";
+import { formatDate, notes, site } from "../lib/content";
 
 export const metadata: Metadata = {
   title: "随笔",
-  description: "关于项目、学习和生活的零散记录。",
+  description: site.notesPageDescription,
 };
 
 export default function NotesPage() {
@@ -15,8 +15,8 @@ export default function NotesPage() {
     <SiteShell active="notes">
       <PageHeading
         eyebrow="NOTES"
-        title="一些慢慢写下来的东西"
-        description="允许想法暂时不完整，也允许旧文章在理解变化之后继续修订。"
+        title={site.notesPageTitle}
+        description={site.notesPageDescription}
         count={notes.length}
       />
 

@@ -28,6 +28,38 @@ content:
         label: 主页简介
         type: text
         required: true
+      - name: projectsPageTitle
+        label: 项目页标题
+        type: string
+        required: true
+      - name: projectsPageDescription
+        label: 项目页说明
+        type: text
+        required: true
+      - name: campusPageTitle
+        label: 校园手记页标题
+        type: string
+        required: true
+      - name: campusPageDescription
+        label: 校园手记页说明
+        type: text
+        required: true
+      - name: notesPageTitle
+        label: 随笔页标题
+        type: string
+        required: true
+      - name: notesPageDescription
+        label: 随笔页说明
+        type: text
+        required: true
+      - name: resourcesPageTitle
+        label: 资料库页标题
+        type: string
+        required: true
+      - name: resourcesPageDescription
+        label: 资料库页说明
+        type: text
+        required: true
       - name: location
         label: 公开位置
         type: string
@@ -74,7 +106,7 @@ content:
         type: collection
         path: content/projects
         format: json
-        filename: "{primary}.json"
+        filename: "{fields.slug}.json"
         view:
           primary: title
           fields: [title, status, year, published]
@@ -85,7 +117,7 @@ content:
             label: 网址标识
             type: string
             required: true
-            description: 仅使用小写英文字母、数字和连字符，创建后不要随意修改。
+            description: 用于文件名，仅使用小写英文字母、数字和连字符；标题可以使用中文。
           - name: title
             label: 项目名称
             type: string
@@ -140,7 +172,7 @@ content:
         type: collection
         path: content/campus
         format: json
-        filename: "{primary}.json"
+        filename: "{fields.slug}.json"
         view:
           primary: title
           fields: [title, category, date, published]
@@ -151,6 +183,7 @@ content:
             label: 网址标识
             type: string
             required: true
+            description: 用于文件名，仅使用小写英文字母、数字和连字符；标题可以使用中文。
           - name: title
             label: 标题
             type: string
@@ -199,7 +232,7 @@ content:
         type: collection
         path: content/notes
         format: json
-        filename: "{primary}.json"
+        filename: "{fields.slug}.json"
         view:
           primary: title
           fields: [title, category, date, published]
@@ -210,6 +243,7 @@ content:
             label: 网址标识
             type: string
             required: true
+            description: 用于文件名，仅使用小写英文字母、数字和连字符；标题可以使用中文。
           - name: title
             label: 标题
             type: string
@@ -255,7 +289,7 @@ content:
         type: collection
         path: content/resources
         format: json
-        filename: "{primary}.json"
+        filename: "{fields.slug}.json"
         view:
           primary: title
           fields: [title, entryType, category, lastChecked, published]
@@ -266,6 +300,7 @@ content:
             label: 网址标识
             type: string
             required: true
+            description: 用于文件名，仅使用小写英文字母、数字和连字符；标题可以使用中文。
           - name: title
             label: 资料名称
             type: string

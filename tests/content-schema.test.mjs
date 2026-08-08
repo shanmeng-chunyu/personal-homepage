@@ -43,6 +43,26 @@ test("个人设置不包含真实姓名字段", async () => {
   assert.ok(site.networkId.length >= 2);
 });
 
+test("栏目页标题和说明可通过个人空间设置配置", async () => {
+  const site = siteSchema.parse(await readJson(new URL("site.json", contentRoot)));
+  const cmsConfig = await readFile(new URL("../.pages.yml", import.meta.url), "utf8");
+
+  for (const field of [
+    "projectsPageTitle",
+    "projectsPageDescription",
+    "campusPageTitle",
+    "campusPageDescription",
+    "notesPageTitle",
+    "notesPageDescription",
+    "resourcesPageTitle",
+    "resourcesPageDescription",
+  ]) {
+    assert.equal(typeof site[field], "string");
+    assert.ok(site[field].length > 0);
+    assert.match(cmsConfig, new RegExp(`name: ${field}`));
+  }
+});
+
 test("B站主页和 QQ 可选且填写时会校验格式", async () => {
   const site = siteSchema.parse(await readJson(new URL("site.json", contentRoot)));
   assert.match(site.bilibili, /^(?:$|https:\/\/)/);
@@ -108,6 +128,15 @@ test("B站视频链接会提取 BV 号、标题和 HTTPS 封面", async () => {
     title: "测试视频",
     cover: "https://i1.hdslb.com/bfs/archive/cover.jpg",
   });
+});
+
+test("CMS 使用 slug 生成文件名，中文标题不影响保存", async () => {
+  const cmsConfig = await readFile(new URL("../.pages.yml", import.meta.url), "utf8");
+  const slugFilenameTemplates =
+    cmsConfig.match(/filename: "\{fields\.slug\}\.json"/g) ?? [];
+
+  assert.equal(slugFilenameTemplates.length, 4);
+  assert.doesNotMatch(cmsConfig, /filename: "\{primary\}\.json"/);
 });
 
 test("B站暂时不可用时保留链接并安全降级", async () => {

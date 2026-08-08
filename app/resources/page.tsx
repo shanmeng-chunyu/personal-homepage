@@ -9,11 +9,11 @@ import {
 import Link from "next/link";
 import { PageHeading } from "../components/page-heading";
 import { SiteShell } from "../components/site-shell";
-import { formatDate, resources } from "../lib/content";
+import { formatDate, resources, site } from "../lib/content";
 
 export const metadata: Metadata = {
   title: "资料库",
-  description: "课程、校园网站、工具与模板组成的实用资料索引。",
+  description: site.resourcesPageDescription,
 };
 
 export default function ResourcesPage() {
@@ -21,8 +21,8 @@ export default function ResourcesPage() {
     <SiteShell active="resources">
       <PageHeading
         eyebrow="RESOURCE LIBRARY"
-        title="值得保存的资料"
-        description="这里既有经过核验的外部链接，也有直接整理在站内、可以慢慢阅读的资料文章。"
+        title={site.resourcesPageTitle}
+        description={site.resourcesPageDescription}
         count={resources.length}
       />
 
