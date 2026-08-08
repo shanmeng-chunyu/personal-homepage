@@ -25,13 +25,18 @@ const fictionEntrySchema = z
     slug,
     title: z.string().min(1),
     summary: z.string().default(""),
-    body: z.string().min(1),
+    body: z.string().min(1).optional(),
+    bodyFile: z.string().min(1).optional(),
     date,
     updated: date,
     order: z.number().int().min(0).default(0),
     published: z.boolean().default(false),
   })
-  .strict();
+  .strict()
+  .refine((entry) => Boolean(entry.body) !== Boolean(entry.bodyFile), {
+    message: "必须提供 body 或 bodyFile，且只能提供其中一个。",
+    path: ["bodyFile"],
+  });
 
 function encode(value) {
   return Buffer.from(value).toString("base64");
@@ -47,6 +52,36 @@ function encryptJson(value, key, associatedData) {
     cipher.getAuthTag(),
   ]);
   return { iv: encode(iv), data: encode(encrypted) };
+}
+
+async function readMarkdownBody(directory, bodyFile) {
+  const normalized = bodyFile.replaceAll("\\", "/");
+  const segments = normalized.split("/");
+  if (
+    !normalized.toLowerCase().endsWith(".md") ||
+    normalized.startsWith("/") ||
+    /^[a-z]:\//i.test(normalized) ||
+    segments.includes("..")
+  ) {
+    throw new Error(`长篇正文路径必须是 fiction 目录内的 Markdown 文件：${bodyFile}`);
+  }
+
+  const filePath = path.resolve(directory, ...segments);
+  const relativePath = path.relative(directory, filePath);
+  if (relativePath.startsWith("..") || path.isAbsolute(relativePath)) {
+    throw new Error(`长篇正文路径不能离开 fiction 目录：${bodyFile}`);
+  }
+
+  try {
+    const body = await readFile(filePath, "utf8");
+    if (!body.trim()) throw new Error(`长篇正文不能为空：${bodyFile}`);
+    return body;
+  } catch (error) {
+    if (error?.code === "ENOENT") {
+      throw new Error(`未找到长篇正文 Markdown 文件：${bodyFile}`);
+    }
+    throw error;
+  }
 }
 
 async function readDrafts(directory) {
@@ -65,11 +100,15 @@ async function readDrafts(directory) {
   }
 
   const entries = await Promise.all(
-    files.map(async (file) =>
-      fictionEntrySchema.parse(
+    files.map(async (file) => {
+      const parsed = fictionEntrySchema.parse(
         JSON.parse(await readFile(path.join(directory, file), "utf8")),
-      ),
-    ),
+      );
+      const body = parsed.bodyFile
+        ? await readMarkdownBody(directory, parsed.bodyFile)
+        : parsed.body;
+      return { ...parsed, body };
+    }),
   );
   const slugs = new Set();
   for (const entry of entries) {
@@ -120,12 +159,14 @@ export async function encryptFiction(
 
   const manifestEntries = [];
   for (const entry of entries) {
+    const articleEntry = { ...entry };
+    delete articleEntry.bodyFile;
     const id = createHash("sha256")
       .update(entry.slug, "utf8")
       .digest("hex")
       .slice(0, 24);
     const article = encryptJson(
-      entry,
+      articleEntry,
       key,
       `fiction:article:${id}:v1`,
     );

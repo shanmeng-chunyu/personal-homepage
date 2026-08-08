@@ -46,12 +46,17 @@ test("长篇内容只发布可由正确密码解密的密文", async () => {
         slug: "chapter-one",
         title: "只有解锁后才能看到的标题",
         summary: "受保护的摘要",
-        body: "# 第一章\n\n受保护的长篇正文。",
+        bodyFile: "chapter-one.md",
         date: "2026-08-08",
         updated: "2026-08-08",
         order: 1,
         published: true,
       }),
+      "utf8",
+    );
+    await writeFile(
+      path.join(sourceDirectory, "chapter-one.md"),
+      "# 第一章\n\n受保护的长篇正文。",
       "utf8",
     );
 
@@ -113,4 +118,32 @@ test("长篇加密密码必须是 4 位数字", async () => {
   await assert.rejects(() => encryptFiction("123"), /必须是 4 位数字/);
   await assert.rejects(() => encryptFiction("12345"), /必须是 4 位数字/);
   await assert.rejects(() => encryptFiction("abcd"), /必须是 4 位数字/);
+});
+
+test("长篇正文路径必须指向 fiction 目录内的 Markdown 文件", async () => {
+  const temporaryRoot = await mkdtemp(path.join(os.tmpdir(), "fiction-path-test-"));
+  const sourceDirectory = path.join(temporaryRoot, "drafts");
+  const targetDirectory = path.join(temporaryRoot, "encrypted");
+
+  try {
+    await mkdir(sourceDirectory, { recursive: true });
+    await writeFile(
+      path.join(sourceDirectory, "chapter.json"),
+      JSON.stringify({
+        slug: "chapter",
+        title: "测试",
+        bodyFile: "../outside.md",
+        date: "2026-08-08",
+        updated: "2026-08-08",
+        published: true,
+      }),
+      "utf8",
+    );
+    await assert.rejects(
+      () => encryptFiction("4827", { sourceDirectory, targetDirectory }),
+      /必须是 fiction 目录内的 Markdown 文件/,
+    );
+  } finally {
+    await rm(temporaryRoot, { recursive: true, force: true });
+  }
 });

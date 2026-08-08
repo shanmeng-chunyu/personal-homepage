@@ -36,7 +36,7 @@
 
 ### 受保护的长篇内容
 
-GitHub Pages 没有服务端鉴权能力，不能把密码或长篇明文放入前端代码。长篇草稿保存在 Git 忽略的 `private-content/fiction/`，由本地脚本使用 PBKDF2-SHA-256 和 AES-256-GCM 加密。仓库与部署产物只保存 `public/protected/fiction/` 下的密文；浏览器在用户输入密码后解密目录和所选正文，密钥仅保留在页面内存中。
+GitHub Pages 没有服务端鉴权能力，不能把密码或长篇明文放入前端代码。长篇草稿保存在 Git 忽略的 `private-content/fiction/`，每篇文章由一个元数据 JSON 通过 `bodyFile` 指向同目录内的 Markdown 正文。本地脚本读取 Markdown 后使用 PBKDF2-SHA-256 和 AES-256-GCM 加密。仓库与部署产物只保存 `public/protected/fiction/` 下的密文；浏览器在用户输入密码后解密目录和所选正文，密钥仅保留在页面内存中。
 
 当前密码格式按产品需求限制为 4 位数字。由于静态页面没有登录限速，四位密码只能提供较弱的访问门槛，不应被视为高强度安全认证。
 

@@ -32,13 +32,13 @@ npm run build:pages
 
 ## 更新受保护的长篇
 
-长篇内容不能通过 Pages CMS 编辑，否则明文会出现在公开仓库。将文章 JSON 放入已忽略的 `private-content/fiction/`，格式参考 `examples/fiction-entry.example.json`。每篇文章使用一个独立 JSON 文件；新增文章时复制模板并改名，修改文章时编辑原文件，不要在单个文件中追加条目数组。在本地 `.env.local` 中设置 4 位数字的 `FICTION_PASSWORD`，然后运行：
+长篇内容不能通过 Pages CMS 编辑，否则明文会出现在公开仓库。将章节元数据 JSON 和正文 Markdown 放入已忽略的 `private-content/fiction/`，格式参考 `examples/fiction-entry.example.json` 和 `examples/fiction-chapter.example.md`。每篇文章使用一个 JSON 文件，并通过 `bodyFile` 指向同目录内的 Markdown 正文，例如 `chapter-one.md`。在本地 `.env.local` 中设置 4 位数字的 `FICTION_PASSWORD`，然后运行：
 
 ```bash
 npm run fiction:encrypt
 ```
 
-只提交生成的 `public/protected/fiction/` 密文，不要提交 `.env.local` 或明文草稿。修改密码时必须重新加密并提交全部长篇密文。
+只提交生成的 `public/protected/fiction/` 密文，不要提交 `.env.local`、章节 JSON 或正文 Markdown 明文草稿。修改密码时必须重新加密并提交全部长篇密文。
 当前密码按设计为 4 位数字，安全性较低，请不要用于高度敏感的内容。
 
 ## 架构原则
