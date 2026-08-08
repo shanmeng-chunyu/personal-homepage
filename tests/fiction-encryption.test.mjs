@@ -36,7 +36,7 @@ test("长篇内容只发布可由正确密码解密的密文", async () => {
   const temporaryRoot = await mkdtemp(path.join(os.tmpdir(), "fiction-test-"));
   const sourceDirectory = path.join(temporaryRoot, "drafts");
   const targetDirectory = path.join(temporaryRoot, "encrypted");
-  const password = "a-long-test-password";
+  const password = "4827";
 
   try {
     await mkdir(sourceDirectory, { recursive: true });
@@ -94,7 +94,7 @@ test("长篇内容只发布可由正确密码解密的密文", async () => {
     assert.match(article.body, /受保护的长篇正文/);
 
     const wrongKey = pbkdf2Sync(
-      "another-long-password",
+      "1357",
       Buffer.from(manifest.kdf.salt, "base64"),
       manifest.kdf.iterations,
       32,
@@ -109,6 +109,8 @@ test("长篇内容只发布可由正确密码解密的密文", async () => {
   }
 });
 
-test("长篇加密密码至少需要 12 个字符", async () => {
-  await assert.rejects(() => encryptFiction("too-short"), /至少需要 12 个字符/);
+test("长篇加密密码必须是 4 位数字", async () => {
+  await assert.rejects(() => encryptFiction("123"), /必须是 4 位数字/);
+  await assert.rejects(() => encryptFiction("12345"), /必须是 4 位数字/);
+  await assert.rejects(() => encryptFiction("abcd"), /必须是 4 位数字/);
 });

@@ -62,10 +62,11 @@
 
 长篇内容不使用 Pages CMS，因为仓库是公开的，提交普通 JSON 会泄露正文。新增或修改时：
 
-1. 在本地创建 `private-content/fiction/`，将 `examples/fiction-entry.example.json` 复制为新的 JSON 文件。
+1. 在本地创建 `private-content/fiction/`，将 `examples/fiction-entry.example.json` 复制为新的 JSON 文件。每篇文章对应一个独立文件，例如 `chapter-one.json`、`chapter-two.json`；不要把多篇文章写成同一文件中的数组。
 2. 填写 `slug`、标题、摘要、正文、发布日期、更新时间和章节顺序。正文支持 Markdown，每篇可以保存较长文字。
-3. 在不会提交的 `.env.local` 中设置 `FICTION_PASSWORD=你的密码`，密码至少 12 个字符。
+3. 在不会提交的 `.env.local` 中设置 `FICTION_PASSWORD=你的4位数字密码`，例如 `FICTION_PASSWORD="4827"`。
 4. 运行 `npm run fiction:encrypt`，确认只生成或修改 `public/protected/fiction/` 下的密文文件。
 5. 运行 `npm run check` 和带仓库子路径的 Pages 构建，再提交密文和代码。
 
 密码不会写入密文或构建配置，忘记后无法从仓库恢复。更换密码时，保留本地明文草稿并重新运行加密命令。不要在正文中引用需要保密的 `public/` 图片，因为静态图片地址不受密码保护。
+长篇密码按设计为 4 位数字，安全性较低，不适合保护高度敏感的信息。

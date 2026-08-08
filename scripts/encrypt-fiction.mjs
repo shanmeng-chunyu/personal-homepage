@@ -13,6 +13,7 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const draftDirectory = path.join(root, "private-content", "fiction");
 const outputDirectory = path.join(root, "public", "protected", "fiction");
 const PBKDF2_ITERATIONS = 310_000;
+const FICTION_PASSWORD_PATTERN = /^[0-9]{4}$/;
 const date = z.string().regex(/^\d{4}-\d{2}-\d{2}$/);
 const slug = z
   .string()
@@ -95,8 +96,13 @@ export async function encryptFiction(
     targetDirectory = outputDirectory,
   } = {},
 ) {
-  if (typeof password !== "string" || password.length < 12) {
-    throw new Error("FICTION_PASSWORD 至少需要 12 个字符。不要把密码写入仓库。");
+  if (
+    typeof password !== "string" ||
+    !FICTION_PASSWORD_PATTERN.test(password)
+  ) {
+    throw new Error(
+      "FICTION_PASSWORD 必须是 4 位数字。不要把密码写入仓库。",
+    );
   }
 
   const entries = await readDrafts(sourceDirectory);

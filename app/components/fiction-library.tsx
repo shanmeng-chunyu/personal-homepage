@@ -137,6 +137,10 @@ export function FictionLibrary() {
   async function unlock(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!manifest || !password || busy) return;
+    if (!/^[0-9]{4}$/.test(password)) {
+      setError("请输入 4 位数字密码。");
+      return;
+    }
     setBusy(true);
     setError("");
     try {
@@ -234,12 +238,20 @@ export function FictionLibrary() {
               id="fiction-password"
               type="password"
               value={password}
-              onChange={(event) => setPassword(event.target.value)}
+              onChange={(event) =>
+                setPassword(event.target.value.replace(/[^0-9]/g, "").slice(0, 4))
+              }
               autoComplete="current-password"
+              inputMode="numeric"
+              pattern="[0-9]{4}"
+              maxLength={4}
+              minLength={4}
+              placeholder="4 位数字"
+              aria-describedby="fiction-password-note"
               disabled={busy}
               autoFocus
             />
-            <button type="submit" disabled={!password || busy}>
+            <button type="submit" disabled={password.length !== 4 || busy}>
               {busy ? (
                 <LoaderCircle className="is-spinning" size={17} aria-hidden="true" />
               ) : (
@@ -249,7 +261,9 @@ export function FictionLibrary() {
             </button>
           </div>
         </form>
-        <p className="fiction-security-note">密码不会被保存，离开页面后自动锁定。</p>
+        <p className="fiction-security-note" id="fiction-password-note">
+          密码不会被保存，离开页面后自动锁定。当前使用 4 位数字，安全性较低，请勿用于高度敏感内容。
+        </p>
         {error ? (
           <p className="fiction-error" role="alert">
             {error}

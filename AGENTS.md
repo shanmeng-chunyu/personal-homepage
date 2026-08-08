@@ -15,7 +15,7 @@
 
 ## 当前交接状态
 
-截至 2026-08-08，已获取并合并远端 `85db9ff`，保留远端新增的 `visualswap-reproduction` 项目和本地响应式图片修复。本轮新增左侧“长篇”入口、浏览器端密码解锁、按需解密阅读、长篇加密脚本和作者文档。当前没有真实长篇密文；页面在设置密码并运行加密命令前显示“暂未开放”。
+截至 2026-08-08，已获取并合并远端 `85db9ff`，保留远端新增的 `visualswap-reproduction` 项目和本地响应式图片修复。本轮新增左侧“长篇”入口、浏览器端密码解锁、按需解密阅读、长篇加密脚本和作者文档；密码格式现按需求限制为 4 位数字。当前没有真实长篇密文；页面在设置密码并运行加密命令前显示“暂未开放”。四位密码安全性较低，只适合一般访问门槛。
 
 已确认 `npm run check` 全部通过，包括 17 项测试；带 `/personal-homepage` 前缀的静态导出成功。密码门、错误密码、解锁目录、正文、锁定和 390px 移动端布局均已在浏览器验证，测试明文和密文已清理。
 
@@ -30,7 +30,7 @@
 
 - `npm install`：安装依赖，要求 Node.js 22.13 及以上。
 - `npm run dev`：生成内容并启动本地开发服务。
-- `npm run fiction:encrypt`：使用 `.env.local` 中的 `FICTION_PASSWORD` 加密本地长篇草稿。
+- `npm run fiction:encrypt`：使用 `.env.local` 中 4 位数字的 `FICTION_PASSWORD` 加密本地长篇草稿。
 - `npm run typecheck`：生成内容并执行 TypeScript 检查。
 - `npm run lint`：执行 ESLint。
 - `npm test`：构建 vinext Worker，并运行 `tests/*.test.mjs`。
