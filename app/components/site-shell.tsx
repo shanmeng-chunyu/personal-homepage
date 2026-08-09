@@ -8,24 +8,51 @@ import {
   Mail,
   MapPin,
   Sparkles,
+  type LucideIcon,
   UserRound,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { site, withBasePath } from "../lib/content";
+import { featureFlags } from "../lib/features";
 
-const navigation = [
+type NavigationKey =
+  | "home"
+  | "projects"
+  | "campus"
+  | "resources"
+  | "notes"
+  | "fiction"
+  | "about";
+
+type NavigationItem = {
+  key: NavigationKey;
+  label: string;
+  href: string;
+  icon: LucideIcon;
+};
+
+const navigation: NavigationItem[] = [
   { key: "home", label: "首页", href: "/", icon: Home },
   { key: "projects", label: "项目", href: "/projects", icon: FolderKanban },
   { key: "campus", label: "南大生活", href: "/campus", icon: MapPin },
   { key: "resources", label: "资料库", href: "/resources", icon: Library },
   { key: "notes", label: "随笔", href: "/notes", icon: BookOpenText },
-  { key: "fiction", label: "长篇", href: "/fiction", icon: BookMarked },
+  ...(featureFlags.showFictionNavigation
+    ? [
+        {
+          key: "fiction" as const,
+          label: "长篇",
+          href: "/fiction",
+          icon: BookMarked,
+        },
+      ]
+    : []),
   { key: "about", label: "关于", href: "/about", icon: UserRound },
-] as const;
+];
 
 type SiteShellProps = {
-  active: (typeof navigation)[number]["key"];
+  active: NavigationKey;
   children: React.ReactNode;
 };
 

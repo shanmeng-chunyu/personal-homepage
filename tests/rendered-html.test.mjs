@@ -81,18 +81,31 @@ test("B站视频卡片保持 4:3，并在填写链接后出现在首页", async 
 });
 
 test("主要栏目均可访问", async () => {
+  const site = JSON.parse(
+    await readFile(new URL("../content/site.json", import.meta.url), "utf8"),
+  );
+
   for (const [pathname, expected] of [
-    ["/projects/", "做过和正在做的东西"],
-    ["/campus/", "在南大生活的切片"],
-    ["/resources/", "值得保存的资料"],
-    ["/notes/", "一些慢慢写下来的东西"],
-    ["/fiction/", "写下来的故事"],
+    ["/projects/", site.projectsPageTitle],
+    ["/campus/", site.campusPageTitle],
+    ["/resources/", site.resourcesPageTitle],
+    ["/notes/", site.notesPageTitle],
     ["/about/", "关于这个网络住处"],
   ]) {
     const response = await render(pathname);
     assert.equal(response.status, 200, pathname);
     assert.match(await response.text(), new RegExp(expected), pathname);
   }
+});
+
+test("长篇关闭显式入口但保留直达页面", async () => {
+  const homeResponse = await render("/");
+  assert.equal(homeResponse.status, 200);
+  assert.ok(!(await homeResponse.text()).includes('href="/fiction"'));
+
+  const fictionResponse = await render("/fiction/");
+  assert.equal(fictionResponse.status, 200);
+  assert.match(await fictionResponse.text(), /写下来的故事/);
 });
 
 test("当前项目的列表与详情页可访问并展示封面", async () => {
