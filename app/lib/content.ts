@@ -1,5 +1,6 @@
 import {
   campusData,
+  friendData,
   noteData,
   projectData,
   resourceData,
@@ -19,6 +20,8 @@ export type SiteConfig = {
   notesPageDescription: string;
   resourcesPageTitle: string;
   resourcesPageDescription: string;
+  friendsPageTitle: string;
+  friendsPageDescription: string;
   location: string;
   status: string;
   avatar: string;
@@ -82,6 +85,17 @@ export type Resource = {
   published: boolean;
 };
 
+export type Friend = {
+  slug: string;
+  name: string;
+  description: string;
+  url: string;
+  avatar: string;
+  tags: readonly string[];
+  featured: boolean;
+  published: boolean;
+};
+
 export const site = siteData as SiteConfig;
 export const bilibiliVideos = videoData as readonly BilibiliVideo[];
 export const projects = (projectData as readonly Project[])
@@ -99,6 +113,13 @@ export const resources = (resourceData as readonly Resource[])
     (a, b) =>
       Number(b.featured) - Number(a.featured) ||
       b.lastChecked.localeCompare(a.lastChecked),
+  );
+export const friends = (friendData as readonly Friend[])
+  .filter((entry) => entry.published)
+  .sort(
+    (a, b) =>
+      Number(b.featured) - Number(a.featured) ||
+      a.name.localeCompare(b.name, "zh-CN"),
   );
 export const readableResources = resources.filter(
   (entry) => entry.entryType === "article",

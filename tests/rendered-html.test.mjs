@@ -90,11 +90,47 @@ test("主要栏目均可访问", async () => {
     ["/campus/", site.campusPageTitle],
     ["/resources/", site.resourcesPageTitle],
     ["/notes/", site.notesPageTitle],
+    ["/friends/", site.friendsPageTitle],
     ["/about/", "关于这个网络住处"],
   ]) {
     const response = await render(pathname);
     assert.equal(response.status, 200, pathname);
     assert.match(await response.text(), new RegExp(expected), pathname);
+  }
+});
+
+test("友站入口可访问，并按发布状态渲染外部个人主页", async () => {
+  const friendsDirectory = new URL("../content/friends/", import.meta.url);
+  let friends = [];
+
+  try {
+    const friendFiles = (await readdir(friendsDirectory)).filter((file) =>
+      file.endsWith(".json"),
+    );
+    friends = await Promise.all(
+      friendFiles.map((file) =>
+        readFile(new URL(file, friendsDirectory), "utf8").then(JSON.parse),
+      ),
+    );
+  } catch (error) {
+    if (error?.code !== "ENOENT") throw error;
+  }
+
+  const response = await render("/friends/");
+  assert.equal(response.status, 200);
+  const html = await response.text();
+  const publishedFriends = friends.filter((entry) => entry.published);
+
+  assert.match(html, /href="\/friends"/);
+  if (publishedFriends.length) {
+    for (const friend of publishedFriends) {
+      assert.ok(html.includes(friend.name));
+      assert.ok(html.includes(friend.url));
+    }
+    assert.match(html, /target="_blank"/);
+    assert.match(html, /rel="noreferrer"/);
+  } else {
+    assert.match(html, /还没有公开的友站/);
   }
 });
 

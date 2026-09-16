@@ -60,6 +60,14 @@ content:
         label: 资料库页说明
         type: text
         required: true
+      - name: friendsPageTitle
+        label: 友站页标题
+        type: string
+        required: true
+      - name: friendsPageDescription
+        label: 友站页说明
+        type: text
+        required: true
       - name: location
         label: 公开位置
         type: string
@@ -346,6 +354,53 @@ content:
             required: true
           - name: featured
             label: 首页推荐
+            type: boolean
+            default: false
+          - name: published
+            label: 公开发布
+            type: boolean
+            default: false
+
+      - name: friends
+        label: 友站
+        type: collection
+        path: content/friends
+        format: json
+        filename: "{fields.slug}.json"
+        view:
+          primary: name
+          fields: [name, url, featured, published]
+          sort: name
+          order: asc
+        fields:
+          - name: slug
+            label: 文件标识
+            type: string
+            required: true
+            description: 用于生成 JSON 文件名，仅使用小写英文字母、数字和连字符，例如 friend-name。
+          - name: name
+            label: 友站名称
+            type: string
+            required: true
+          - name: description
+            label: 友站简介
+            type: text
+            required: true
+          - name: url
+            label: 个人主页地址
+            type: string
+            required: true
+            description: 填写以 http:// 或 https:// 开头的完整网址。
+          - name: avatar
+            label: 头像或站点图标
+            type: image
+            description: 可选；上传方形图片效果最好，留空时会显示友站名称首字。
+          - name: tags
+            label: 标签
+            type: string
+            list: true
+          - name: featured
+            label: 置顶显示
             type: boolean
             default: false
           - name: published

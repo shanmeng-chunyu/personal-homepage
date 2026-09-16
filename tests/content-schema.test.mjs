@@ -3,6 +3,7 @@ import { readFile } from "node:fs/promises";
 import test from "node:test";
 import {
   articleSchema,
+  friendSchema,
   projectSchema,
   resourceSchema,
   siteSchema,
@@ -56,6 +57,8 @@ test("栏目页标题和说明可通过个人空间设置配置", async () => {
     "notesPageDescription",
     "resourcesPageTitle",
     "resourcesPageDescription",
+    "friendsPageTitle",
+    "friendsPageDescription",
   ]) {
     assert.equal(typeof site[field], "string");
     assert.ok(site[field].length > 0);
@@ -135,7 +138,7 @@ test("CMS 使用 slug 生成文件名，中文标题不影响保存", async () =
   const slugFilenameTemplates =
     cmsConfig.match(/filename: "\{fields\.slug\}\.json"/g) ?? [];
 
-  assert.equal(slugFilenameTemplates.length, 4);
+  assert.equal(slugFilenameTemplates.length, 5);
   assert.doesNotMatch(cmsConfig, /filename: "\{primary\}\.json"/);
 });
 
@@ -270,12 +273,37 @@ test("资料库区分外部链接和站内文章，并检查发布目标", () =>
   );
 });
 
+test("友站内容支持头像、标签、置顶和发布开关", async () => {
+  const cmsConfig = await readFile(new URL("../.pages.yml", import.meta.url), "utf8");
+  const friend = friendSchema.parse({
+    slug: "example-friend",
+    name: "示例友站",
+    description: "一处值得拜访的个人主页。",
+    url: "https://example.com/",
+    avatar: "/media/friend.webp",
+    tags: ["博客", "创作"],
+    featured: true,
+    published: true,
+  });
+
+  assert.equal(friend.url, "https://example.com/");
+  assert.equal(friend.featured, true);
+  assert.deepEqual(friend.tags, ["博客", "创作"]);
+  assert.match(cmsConfig, /path: content\/friends/);
+  assert.match(cmsConfig, /label: 友站/);
+  assert.throws(
+    () => friendSchema.parse({ ...friend, url: "ftp://example.com/" }),
+    /必须以 http:\/\/ 或 https:\/\//,
+  );
+});
+
 test("所有增量内容都满足契约且 slug 唯一", async () => {
   const groups = [
     [await readCollection("projects"), projectSchema],
     [await readCollection("campus"), articleSchema],
     [await readCollection("notes"), articleSchema],
     [await readCollection("resources"), resourceSchema],
+    [await readCollection("friends"), friendSchema],
   ];
 
   for (const [entries, schema] of groups) {

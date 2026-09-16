@@ -1001,6 +1001,130 @@ a {
   color: var(--faint);
 }
 
+.friend-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.friend-card {
+  display: flex;
+  min-height: 250px;
+  flex-direction: column;
+  padding: 22px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  background:
+    radial-gradient(circle at 100% 0, rgba(102, 87, 168, 0.1), transparent 15rem),
+    var(--surface);
+  box-shadow: 0 12px 32px rgba(31, 36, 51, 0.045);
+  transition:
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    transform 180ms ease;
+}
+
+.friend-card:hover {
+  border-color: rgba(102, 87, 168, 0.3);
+  box-shadow: 0 18px 38px rgba(31, 36, 51, 0.08);
+  transform: translateY(-2px);
+}
+
+.friend-card-head {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+}
+
+.friend-avatar,
+.friend-avatar img {
+  width: 58px;
+  height: 58px;
+  border-radius: 17px;
+}
+
+.friend-avatar {
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  color: var(--accent-strong);
+  background: var(--accent-soft);
+  font-size: 1.15rem;
+  font-weight: 650;
+}
+
+.friend-avatar img {
+  object-fit: cover;
+}
+
+.friend-host {
+  overflow: hidden;
+  color: var(--faint);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.68rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.friend-card-head > svg {
+  color: var(--accent);
+  transition: transform 160ms ease;
+}
+
+.friend-card:hover .friend-card-head > svg {
+  transform: translate(2px, -2px);
+}
+
+.friend-copy {
+  margin-top: 26px;
+}
+
+.friend-copy h2,
+.friend-empty h2 {
+  margin: 0;
+  font-size: 1.14rem;
+  font-weight: 600;
+  letter-spacing: -0.035em;
+}
+
+.friend-copy p,
+.friend-empty p {
+  margin: 9px 0 0;
+  color: var(--muted);
+  font-size: 0.86rem;
+  line-height: 1.7;
+}
+
+.friend-card .tag-list {
+  margin-top: auto;
+  padding-top: 22px;
+}
+
+.friend-empty {
+  display: grid;
+  min-height: 290px;
+  place-items: center;
+  align-content: center;
+  padding: 36px;
+  text-align: center;
+  border: 1px dashed var(--border);
+  border-radius: 20px;
+  background: var(--surface);
+}
+
+.friend-empty > span {
+  display: grid;
+  width: 58px;
+  height: 58px;
+  margin-bottom: 20px;
+  place-items: center;
+  color: var(--accent);
+  border-radius: 18px;
+  background: var(--accent-soft);
+}
+
 .notes-index {
   border-top: 1px solid var(--foreground);
 }
@@ -1705,6 +1829,7 @@ a {
   .video-grid,
   .catalog-grid,
   .resource-grid,
+  .friend-grid,
   .about-layout {
     grid-template-columns: 1fr;
   }

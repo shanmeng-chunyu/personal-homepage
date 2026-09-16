@@ -50,6 +50,16 @@ const optionalBilibiliVideoUrl = z.preprocess(
 );
 const optionalTags = z.array(z.string().min(1)).default([]);
 const optionalFlag = z.boolean().default(false);
+const requiredHttpUrl = z.preprocess(
+  normalizeOptionalString,
+  z
+    .string()
+    .url()
+    .refine(
+      (value) => /^https?:\/\//i.test(value),
+      "友站地址必须以 http:// 或 https:// 开头",
+    ),
+);
 
 export const siteSchema = z
   .object({
@@ -64,6 +74,8 @@ export const siteSchema = z
     notesPageDescription: z.string().min(1),
     resourcesPageTitle: z.string().min(1),
     resourcesPageDescription: z.string().min(1),
+    friendsPageTitle: z.string().min(1),
+    friendsPageDescription: z.string().min(1),
     location: optionalText,
     status: optionalText,
     avatar: optionalText,
@@ -161,3 +173,16 @@ export const resourceSchema = z
       });
     }
   });
+
+export const friendSchema = z
+  .object({
+    slug,
+    name: z.string().min(1),
+    description: z.string().min(1),
+    url: requiredHttpUrl,
+    avatar: optionalText,
+    tags: optionalTags,
+    featured: optionalFlag,
+    published: optionalFlag,
+  })
+  .strict();

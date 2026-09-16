@@ -14,7 +14,15 @@ function absolute(pathname: string) {
 }
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const staticRoutes = ["", "/projects", "/campus", "/resources", "/notes", "/about"];
+  const staticRoutes = [
+    "",
+    "/projects",
+    "/campus",
+    "/resources",
+    "/notes",
+    "/friends",
+    "/about",
+  ];
   const latestUpdate = [
     ...campusPosts.map((entry) => entry.updated),
     ...notes.map((entry) => entry.updated),

@@ -5,6 +5,7 @@ import { listJsonFiles } from "./content-files.mjs";
 import { resolveBilibiliVideos } from "./bilibili-video.mjs";
 import {
   articleSchema,
+  friendSchema,
   projectSchema,
   resourceSchema,
   siteSchema,
@@ -45,11 +46,12 @@ const videos = await resolveBilibiliVideos([
   site.bilibiliVideo1,
   site.bilibiliVideo2,
 ]);
-const [projects, campusPosts, notes, resources] = await Promise.all([
+const [projects, campusPosts, notes, resources, friends] = await Promise.all([
   readCollection("projects", projectSchema),
   readCollection("campus", articleSchema),
   readCollection("notes", articleSchema),
   readCollection("resources", resourceSchema),
+  readCollection("friends", friendSchema),
 ]);
 
 const generated = `/* This file is generated. Edit files under /content instead. */
@@ -59,6 +61,7 @@ export const projectData = ${JSON.stringify(projects, null, 2)} as const;
 export const campusData = ${JSON.stringify(campusPosts, null, 2)} as const;
 export const noteData = ${JSON.stringify(notes, null, 2)} as const;
 export const resourceData = ${JSON.stringify(resources, null, 2)} as const;
+export const friendData = ${JSON.stringify(friends, null, 2)} as const;
 `;
 
 const outputDirectory = path.join(root, "app", "generated");
@@ -66,5 +69,5 @@ await mkdir(outputDirectory, { recursive: true });
 await writeFile(path.join(outputDirectory, "content.ts"), generated, "utf8");
 
 console.log(
-  `Validated ${projects.length + campusPosts.length + notes.length + resources.length} content entries.`,
+  `Validated ${projects.length + campusPosts.length + notes.length + resources.length + friends.length} content entries.`,
 );

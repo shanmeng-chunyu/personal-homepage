@@ -10,6 +10,7 @@ import {
   Sparkles,
   type LucideIcon,
   UserRound,
+  UsersRound,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -22,6 +23,7 @@ type NavigationKey =
   | "campus"
   | "resources"
   | "notes"
+  | "friends"
   | "fiction"
   | "about";
 
@@ -38,6 +40,7 @@ const navigation: NavigationItem[] = [
   { key: "campus", label: "南大生活", href: "/campus", icon: MapPin },
   { key: "resources", label: "资料库", href: "/resources", icon: Library },
   { key: "notes", label: "随笔", href: "/notes", icon: BookOpenText },
+  { key: "friends", label: "友站", href: "/friends", icon: UsersRound },
   ...(featureFlags.showFictionNavigation
     ? [
         {
