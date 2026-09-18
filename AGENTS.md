@@ -19,6 +19,8 @@
 
 已确认 `npm run check` 全部通过，包括 23 项测试；带 `/personal-homepage` 前缀的静态导出成功。友站页的空状态和示例卡片已在 1440px 桌面端与 390px 移动端生产静态预览中验证，视觉验收使用的示例友站已清理。长篇显式入口关闭后的导航已在 1440px 桌面端和 390px 移动端生产静态预览中验证，直达页面仍可访问。密码门、错误密码、解锁目录、正文、锁定和 390px 移动端布局均已在浏览器验证，测试明文和密文已清理。
 
+2026-09-18：`content/friends/diewehmut.json` 已加入首条公开友站 `diesw-nexus`，指向 `https://diewehmut.github.io/`；名称依据对方站点公开配置，头像留空以使用站名首字。新增后 `npm run check` 的 23 项测试全部通过，带 `/personal-homepage` 前缀的静态导出成功；导出的友站页包含站名、简介和正确的外链，不再显示空状态。
+
 ## 已知问题与优先级
 
 1. `app/layout.tsx` 同时使用含子路径的 `metadataBase` 和 `withBasePath`，导致线上 RSS alternate、Open Graph 与 Twitter 图片地址重复 `/personal-homepage`。
