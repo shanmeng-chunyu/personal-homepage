@@ -36,7 +36,7 @@
 
 ### 友站内容
 
-友站与其他公开内容一样由 Pages CMS 写入 `content/friends/`，构建时校验网址并静态生成 `/friends` 页面。每个条目可配置站名、简介、头像、标签、置顶和发布状态；头像复用 `public/media/` 上传流程，外链仅允许 HTTP 或 HTTPS。没有已发布条目时页面保留可访问的空状态，不需要数据库或运行时请求。
+友站与其他公开内容一样由 Pages CMS 写入 `content/friends/`，构建时校验网址并静态生成 `/friends` 页面。每个条目可配置站名、简介、头像、标签、置顶和发布状态；上传头像复用 `public/media/`，站点也允许从 `avatars.githubusercontent.com` 直接显示 GitHub 头像，外链仅允许 HTTP 或 HTTPS。没有已发布条目时页面保留可访问的空状态，不需要数据库或运行时请求。
 
 ### 受保护的长篇内容
 

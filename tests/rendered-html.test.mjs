@@ -126,6 +126,10 @@ test("友站入口可访问，并按发布状态渲染外部个人主页", async
     for (const friend of publishedFriends) {
       assert.ok(html.includes(friend.name));
       assert.ok(html.includes(friend.url));
+      if (friend.avatar) {
+        assert.ok(html.includes(friend.avatar));
+        assert.ok(html.includes(`${friend.name} 的头像或站点图标`));
+      }
     }
     assert.match(html, /target="_blank"/);
     assert.match(html, /rel="noreferrer"/);
